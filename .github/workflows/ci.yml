@@ -16,9 +16,7 @@ jobs: ## Trabajos / Acciones que realizara el workflow
       ## pasos predefinidos que se realizaran en la maquina virtual
       - uses: actions/checkout@v6 ## clonar el repositorio en la maquina virtual
       - uses: pnpm/action-setup@v4 ## instalar pnpm en la máquina virtual
-        with:
-          version: 9.15.9 ## version que se utilizara del paquete
-        
+
       - uses: actions/setup-node@v7 ## instalar node en la máquina virtual
         with:
           node-version: 22 ## version que se utilizara del paquete
@@ -35,11 +33,11 @@ jobs: ## Trabajos / Acciones que realizara el workflow
 
       - run: pnpm format:check ## verificar que el código esté formateado correctamente
         working-directory: backend
-        
+
       # Seguridad
       - run: pnpm audit
         working-directory: backend
-  
+
       # Compilación
       - run: pnpm build ## construir la aplicación
         working-directory: backend
@@ -48,4 +46,3 @@ jobs: ## Trabajos / Acciones que realizara el workflow
       ## - run: pnpm test ## ejecutar las pruebas unitarias ##! Documentado hasta arealizar los test
       ## - run: pnpm test:cov ## ejecutar las pruebas de cobertura ##! Documentado hasta arealizar los test
       ## - run: pnpm test:e2e ## ejecutar las pruebas end-to-end  ##! Documentado hasta arealizar los test e2e
-      
