@@ -27,18 +27,23 @@ jobs: ## Trabajos / Acciones que realizara el workflow
 
       # Instalar dependencias
       - run: pnpm install --frozen-lockfile ## la bandera puesta garantiza que se instale exactamente lo del archivo "pnpm-lock"
+        working-directory: backend
 
       # Calidad y formato
       - run: pnpm lint ## ejecutar el linter para verificar que el código cumpla con las reglas de estilo y calidad definidas
       - run: pnpm format:check ## verificar que el código esté formateado correctamente
-
+        working-directory: backend
+        
       # Seguridad
       - run: pnpm audit
-
+        working-directory: backend
+  
       # Compilación
       - run: pnpm build ## construir la aplicación
+        working-directory: backend
 
       # Pruebas
       ## - run: pnpm test ## ejecutar las pruebas unitarias ##! Documentado hasta arealizar los test
       ## - run: pnpm test:cov ## ejecutar las pruebas de cobertura ##! Documentado hasta arealizar los test
       ## - run: pnpm test:e2e ## ejecutar las pruebas end-to-end  ##! Documentado hasta arealizar los test e2e
+      
