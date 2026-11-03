@@ -31,6 +31,8 @@ jobs: ## Trabajos / Acciones que realizara el workflow
 
       # Calidad y formato
       - run: pnpm lint ## ejecutar el linter para verificar que el código cumpla con las reglas de estilo y calidad definidas
+        working-directory: backend
+
       - run: pnpm format:check ## verificar que el código esté formateado correctamente
         working-directory: backend
         
