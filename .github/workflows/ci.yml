@@ -23,6 +23,7 @@ jobs: ## Trabajos / Acciones que realizara el workflow
         with:
           node-version: 22 ## version que se utilizara del paquete
           cache: pnpm ## habilitar cache para no tener que descargar los paquetes cada vez que se ejecute el workflow
+          cache-dependency-path: backend/pnpm.lock.yaml ## path del yml de pnpm
 
       # Instalar dependencias
       - run: pnpm install --frozen-lockfile ## la bandera puesta garantiza que se instale exactamente lo del archivo "pnpm-lock"
