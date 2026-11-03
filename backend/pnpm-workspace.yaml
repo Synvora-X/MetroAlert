@@ -1,0 +1,5 @@
+
+overrides:
+  undici: ">=6.29.1"
+  tmp: ">=0.2.6"
+  minimatch: ">=11.0.1"
