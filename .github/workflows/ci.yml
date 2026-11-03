@@ -16,6 +16,8 @@ jobs: ## Trabajos / Acciones que realizara el workflow
       ## pasos predefinidos que se realizaran en la maquina virtual
       - uses: actions/checkout@v6 ## clonar el repositorio en la maquina virtual
       - uses: pnpm/action-setup@v4 ## instalar pnpm en la máquina virtual
+        with:
+          version: 9.15.9 ## version que se utilizara del paquete
         
       - uses: actions/setup-node@v7 ## instalar node en la máquina virtual
         with:
