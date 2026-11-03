@@ -1,0 +1,42 @@
+name: CI ## nombre del workflow
+
+on: ## Eventros que haran que el workflow se inicialice
+  push:
+    branches: [main]
+
+  pull_request:
+    branches: [main]
+
+## ref uses: propietario/nombre-de-la-acción@referencia
+
+jobs: ## Trabajos / Acciones que realizara el workflow
+  build: ## Nombre del trabajo
+    runs-on: ubuntu-latest ## Maquina virtual donde correra el workflow
+    steps: ## Lista de pasos que se ejecutan en la maquina virtual
+      ## pasos predefinidos que se realizaran en la maquina virtual
+      - uses: actions/checkout@v6 ## clonar el repositorio en la maquina virtual
+      - uses: pnpm/action-setup@0609f0983b7a228f052f81ef4c3d6510cae254ad ## instalar pnpm en la máquina virtual
+        with:
+          version: 9.15.9 ## version que se utilizara del paquete
+      - uses: actions/setup-node@v7 ## instalar node en la máquina virtual
+        with:
+          node-version: 22 ## version que se utilizara del paquete
+          cache: pnpm ## habilitar cache para no tener que descargar los paquetes cada vez que se ejecute el workflow
+
+      # Instalar dependencias
+      - run: pnpm install --frozen-lockfile ## la bandera puesta garantiza que se instale exactamente lo del archivo "pnpm-lock"
+
+      # Calidad y formato
+      - run: pnpm lint ## ejecutar el linter para verificar que el código cumpla con las reglas de estilo y calidad definidas
+      - run: pnpm format:check ## verificar que el código esté formateado correctamente
+
+      # Seguridad
+      - run: pnpm audit
+
+      # Compilación
+      - run: pnpm build ## construir la aplicación
+
+      # Pruebas
+      ## - run: pnpm test ## ejecutar las pruebas unitarias ##! Documentado hasta arealizar los test
+      ## - run: pnpm test:cov ## ejecutar las pruebas de cobertura ##! Documentado hasta arealizar los test
+      ## - run: pnpm test:e2e ## ejecutar las pruebas end-to-end  ##! Documentado hasta arealizar los test e2e
