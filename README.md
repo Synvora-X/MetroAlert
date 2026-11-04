@@ -7,7 +7,7 @@
   <img src="https://img.shields.io/badge/estado-en%20construcci%C3%B3n-orange" alt="Estado: en construcción">
 </p>
 
-# MetroAlerta
+# MetroAlert
 
 Aplicación web progresiva (PWA) para el Valle de Aburrá (Antioquia, Colombia). Cuando hay una contingencia en el Metro de Medellín (interrupción, suspensión, cierre de estación o retraso), MetroAlerta muestra qué está afectado y propone **hasta 3 rutas alternativas** con tiempo estimado.
 
