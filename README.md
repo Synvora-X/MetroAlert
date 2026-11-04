@@ -1,6 +1,6 @@
 <p align="center">
   <!-- Imagen temporal: se planea reemplazarla por material propio del proyecto -->
-  <img src="https://mir-s3-cdn-cf.behance.net/project_modules/source/24313a33389971.56a99479800dc.gif" alt="Metro de Medellín" width="640">
+  <img src="docs/assets/brand/metro_gif.gif" alt="Metro de Medellín" width="800">
 </p>
 
 <p align="center">
@@ -62,6 +62,3 @@ Todos los comandos se ejecutan dentro de `backend/`:
 
 - [AGENTS.md](AGENTS.md) — documento rector: qué es MetroAlerta, alcance del MVP, dominio, reglas de trabajo y protocolo de agentes. La documentación de detalle (`/docs`: arquitectura, modelo de datos, API, etc.) está pendiente; la lista completa está en AGENTS.md, sección 13.
 
-## Crédito de la portada
-
-- Animación de encabezado: *Metro de Medellín*, de [David López Ramírez](https://www.behance.net/davidlo) — [Behance, 2015](https://www.behance.net/gallery/33389971/Metro-de-Medellin). Imagen temporal; será reemplazada por material propio del proyecto.
