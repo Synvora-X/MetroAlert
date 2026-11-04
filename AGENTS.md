@@ -1,0 +1,309 @@
+# AGENTS.md — MetroAlerta
+
+> Contexto general del proyecto para cualquier agente de IA. No está orientado a una capa en particular (frontend, backend, ingesta): describe qué es MetroAlerta, qué reglas rigen todo el sistema y cómo se trabaja en él.
+>
+> - Si algo de este archivo contradice el código real, **el código manda**: señala la contradicción antes de hacer cambios grandes.
+> - `TODO(confirmar)` marca datos que el desarrollador aún debe definir. No los inventes ni los des por hechos.
+> - Este archivo no registra progreso ni tareas: el estado actual, las tareas y las decisiones recientes viven en `MEMORY.md` (ver sección 14). Para saber qué está implementado de verdad, inspecciona además el repositorio.
+
+---
+
+## 1. Qué es MetroAlerta
+
+PWA para el Valle de Aburrá (Antioquia, Colombia). Cuando hay una contingencia en el Metro de Medellín (interrupción, suspensión, cierre de estación, retraso), muestra qué está afectado y propone **hasta 3 rutas alternativas** con tiempo estimado.
+
+- **Problema que resuelve:** saber que hay una contingencia no dice qué hacer para continuar el viaje. MetroAlerta conecta "hay una contingencia" con "qué hago ahora".
+- **No reemplaza** a las apps de navegación: es una herramienta especializada para contingencias.
+- **Usuarios:** personas que usan el transporte público a diario (estudiantes, trabajadores), desde el celular, con poco tiempo para decidir.
+- **Propósito:** proyecto de portafolio y prototipo funcional para validar la idea con posibles aliados (Metro de Medellín, Área Metropolitana del Valle de Aburrá, otras entidades de movilidad).
+- Las ideas comerciales (licenciamiento, piloto, soporte) son **hipótesis**: no hay precios aprobados, contratos ni autorizaciones institucionales. Las decisiones comerciales no deben alterar la arquitectura ni ampliar el alcance.
+
+Las afirmaciones sobre el problema (dependencia del Metro, tiempo perdido buscando alternativas, información dispersa) son **hipótesis por validar**. No presentes cifras o porcentajes de impacto como oficiales sin fuente, fecha, metodología y población de referencia.
+
+## 2. Alcance del MVP
+
+Objetivo: demostrar el flujo completo (identificar contingencia → mostrar afectación → ofrecer hasta 3 alternativas), aunque inicialmente use datos simulados o recopilados previamente.
+
+| Id | Funcionalidad | Resumen |
+|---|---|---|
+| F01 | Ingesta y gestión de alertas | Obtener alertas de fuentes verificables. Cada alerta guarda, cuando exista el dato: tipo, línea, estaciones, descripción, fecha de publicación, estado, fuente y última actualización. |
+| F02 | Mapa | Leaflet + OpenStreetMap: red del Metro, estaciones, líneas, paraderos, rutas integradas (si hay datos), ubicación del usuario (con permiso), contingencias y recorridos alternativos. |
+| F03 | Rutas alternativas | Dado origen, destino y contingencias vigentes, calcular hasta 3 alternativas con pasos comprensibles (Metro, buses integrados/alimentadores, caminata, transbordos). |
+| F04 | Tiempo estimado | Aproximación basada en distancias, velocidades promedio configurables y tiempos de caminata/bus/transbordo. Nunca un tiempo garantizado. |
+| F05 | Compartir por WhatsApp | Mensaje legible con origen, destino, ruta, medios, estaciones/paraderos, tiempo estimado y contingencia relacionada. |
+
+**Fuera del MVP (no implementar sin aprobación explícita):**
+
+- Predicción de fallas del Metro o de congestión vial, y cualquier IA predictiva.
+- Seguimiento GPS de buses en tiempo real.
+- Integración con plataformas de transporte privado.
+- Apps nativas Android/iOS.
+- Analítica avanzada de movilidad y modelos de optimización de tráfico.
+- Notificaciones masivas avanzadas.
+- Integraciones institucionales que requieran autorizaciones aún no obtenidas.
+
+La visión a largo plazo no es el alcance actual: ninguna funcionalidad futura entra al MVP automáticamente.
+
+## 3. Flujo principal del producto
+
+1. Una fuente publica información sobre una posible contingencia.
+2. La ingesta la recibe, valida su estructura y procedencia, y la normaliza.
+3. Se identifica la línea, estación o zona afectada (si es posible).
+4. Se crea o actualiza la contingencia en la base de datos.
+5. El frontend consulta el estado actualizado.
+6. El usuario indica origen y destino.
+7. El backend calcula alternativas y tiempos estimados.
+8. Se muestran hasta 3 alternativas; el usuario elige una y puede compartirla.
+
+## 4. Stack
+
+| Componente | Tecnología | Versión |
+|---|---|---|
+| Frontend | Next.js + TypeScript | TODO(confirmar) |
+| Backend | NestJS + TypeScript | TODO(confirmar) |
+| Base de datos | Supabase / PostgreSQL | TODO(confirmar) |
+| Mapas | Leaflet + OpenStreetMap | TODO(confirmar) |
+| Ingesta | Python o n8n (por decidir) | TODO(confirmar) |
+| Contenedores | Docker | TODO(confirmar) |
+| CI/CD | GitHub Actions | TODO(confirmar) |
+| Despliegue frontend | Vercel | — |
+
+Que una tecnología aparezca aquí **no significa que esté configurada o implementada**. Verifícalo en el repositorio antes de usarla.
+
+**Decisiones abiertas** (no las tomes por tu cuenta; proponlas como ADR):
+
+- Python vs n8n para la ingesta.
+- Dónde se aloja el backend y el servicio de ingesta.
+- Proveedor de tiles del mapa para producción (el servidor público de OpenStreetMap tiene una política de uso que limita el tráfico alto).
+- Modelo de datos definitivo (se diseña a partir del dominio, no al revés).
+
+## 5. Responsabilidad de cada componente
+
+| Componente | Responsable de | No debe |
+|---|---|---|
+| Frontend | UI, navegación, mapa, selección de origen/destino, mostrar alternativas, compartir, capacidades PWA, estados de carga/error/vacío | Calcular rutas ni contener reglas de negocio centrales |
+| Backend | Endpoints, reglas de negocio, cálculo de rutas y tiempos, gestión de alertas, validación y seguridad | Poner lógica de negocio en controladores |
+| Base de datos | Persistir alertas, contingencias, líneas, estaciones, paraderos, rutas, segmentos y parámetros de estimación | Tener tablas o campos sin una necesidad de dominio clara |
+| Ingesta | Consultar fuentes, normalizar, validar, evitar duplicados, detectar cambios de estado, registrar errores | Mezclarse con la presentación, o forzar cambios en el resto del sistema cuando cambia una fuente |
+
+Principios de arquitectura que sí cambian cómo trabajas:
+
+- Cambiar de fuente de información no debe obligar a modificar el dominio ni la UI.
+- Una falla en una fuente externa **no** debe tumbar la aplicación: se degrada y se informa.
+- El dominio no depende de proveedores concretos (Supabase, n8n, etc.).
+- No introduzcas microservicios, colas ni brokers sin una justificación técnica concreta. El servicio de ingesta es un proceso separado, no una arquitectura de microservicios.
+
+## 6. Dominio y reglas de negocio
+
+**Glosario**
+
+- **Línea:** infraestructura y estaciones que conforman un servicio de transporte.
+- **Estación:** punto de acceso o conexión del Metro.
+- **Paradero:** lugar donde se aborda o desciende de un servicio.
+- **Ruta de transporte:** recorrido que conecta puntos con un medio de transporte.
+- **Alerta:** comunicación sobre una situación relevante para la movilidad.
+- **Contingencia:** situación que altera parcial o totalmente un servicio.
+- **Origen / Destino:** inicio y fin del desplazamiento del usuario.
+- **Ruta alternativa:** secuencia de segmentos que permite llegar al destino evitando una afectación o usando otros medios.
+- **Transbordo:** cambio de servicio o medio durante el viaje.
+- **Tiempo estimado:** aproximación del tiempo para completar una ruta.
+
+**Reglas**
+
+- Una alerta **no** es automáticamente una contingencia activa. No interpretes cualquier publicación como contingencia confirmada.
+- Toda alerta tiene uno de tres estados: **activa**, **resuelta** o **vigencia indeterminada**.
+- Una contingencia puede afectar una o varias estaciones, o solo parte de una línea, sin suspender todo el servicio.
+- Nunca recomiendes segmentos afectados según información confirmada.
+- Los recorridos mantienen una secuencia geográfica coherente.
+- Máximo 3 alternativas. Si no hay datos suficientes para construir una, **no la generes**: informa que no hay alternativas con los datos disponibles.
+- Los tiempos se calculan con parámetros identificables y configurables (velocidades, tiempos de transbordo), nunca con valores mágicos.
+- La información desactualizada se marca como tal.
+
+## 7. Datos y fuentes externas
+
+La disponibilidad y calidad de los datos es el principal riesgo técnico del proyecto.
+
+**Fuentes a investigar:** Metro de Medellín, Área Metropolitana del Valle de Aburrá, portales de datos abiertos, información geográfica del sistema, OpenStreetMap, comunicados y canales oficiales. Prioriza fuentes oficiales, abiertas y verificables.
+
+**Reglas**
+
+- Identifica siempre la fuente y, cuando corresponda, la fecha de obtención.
+- Todo dato tiene un **origen explícito**: `oficial`, `abierto`, `estimado` o `simulado`. Nunca los mezcles ni los presentes como equivalentes.
+- Que una fuente sea consultable desde un navegador no la hace pública: verifica condiciones de uso y redistribución antes de extraer datos.
+- No dependas de una sola fuente sin necesidad.
+- Maneja errores y datos no disponibles de forma explícita.
+- La información geográfica vive separada de los componentes visuales, para actualizarla sin tocar la UI.
+- Si usas OpenStreetMap, muestra la atribución requerida y respeta su política de uso.
+
+**Datos simulados:** permitidos para desarrollo y pruebas, siempre identificados como simulados, separados de los reales, con estructura compatible con el modelo esperado y capaces de reproducir escenarios de contingencia.
+
+## 8. Reglas de honestidad (aplican a todo)
+
+Nunca:
+
+- Inventes endpoints, tablas, campos, coordenadas, estaciones, paraderos, recorridos, fuentes oficiales ni métodos de librerías.
+- Asumas que una API o integración existe sin comprobarlo en documentación oficial.
+- Presentes estimaciones o datos simulados como datos reales.
+- Afirmes que algo está terminado sin haberlo verificado.
+
+Si falta información: investiga en documentación oficial, o pregunta cuando la decisión afecte de forma importante al diseño.
+
+## 9. Seguridad y límites
+
+**Siempre**
+
+- Validar entradas del usuario y datos de fuentes externas (no confiar ciegamente en ellos).
+- Mantener secretos en variables de entorno; el repositorio solo lleva `.env.example` sin valores.
+- Configurar permisos de Supabase de forma explícita (RLS en tablas expuestas).
+- Pedir la ubicación del usuario con su autorización y usarla solo para lo que la requiere. No almacenarla en la base de datos salvo que se decida y documente.
+- Evitar registrar información sensible innecesaria; los errores al usuario no exponen detalles internos.
+
+**Preguntar primero**
+
+- Agregar una dependencia nueva.
+- Crear migraciones o cambiar el esquema de la base de datos.
+- Cambiar el contrato de la API.
+- Agregar o cambiar una fuente externa de datos.
+- Tocar Docker, CI/CD o configuración de despliegue.
+- Eliminar código funcional o hacer refactorizaciones amplias.
+- Cualquier funcionalidad fuera del MVP.
+
+**Nunca**
+
+- Subir secretos o `.env` con valores reales al repositorio.
+- Exponer credenciales privilegiadas (por ejemplo la `service role key` de Supabase) en el frontend.
+- Modificar o desactivar pruebas para que pasen, o cambiar el comportamiento esperado solo para satisfacerlas.
+- Ocultar un error con una solución temporal en lugar de corregir su causa.
+- Acceder a entornos de producción. TODO(confirmar) qué entornos existen y qué está permitido.
+
+## 10. Calidad y definición de "terminado"
+
+**Pruebas**
+
+- Unitarias: reglas de negocio, validaciones y cálculos (estado de alertas, rutas, estimación de tiempos).
+- Integración: servicios, repositorios y base de datos cuando corresponda.
+- E2E: el flujo principal descrito en la sección 3.
+- Carga: una contingencia grande puede disparar consultas simultáneas; se evalúa cuando el flujo principal esté estable.
+- Cubre éxito, error y casos límite. No escribas pruebas solo para subir la cobertura. Usa las herramientas de testing ya configuradas.
+
+**Una funcionalidad está terminada cuando:**
+
+1. Cumple el requerimiento definido.
+2. Respeta las responsabilidades de la sección 5.
+3. Maneja los casos de error relevantes.
+4. Tiene pruebas apropiadas y no introduce regresiones conocidas.
+5. Usa datos reales o simulados correctamente identificados.
+6. Está integrada con los componentes que corresponden.
+7. Está documentada si su complejidad lo requiere.
+8. Fue verificada con los comandos reales del proyecto (sección 12).
+
+Que el código compile no es suficiente.
+
+## 11. Experiencia de usuario, accesibilidad y PWA
+
+El usuario probablemente está en una situación de incertidumbre y con poco tiempo.
+
+- **Mobile-first**, responsive, contraste adecuado, jerarquía visual clara.
+- Las contingencias activas se distinguen de un vistazo; lo importante se encuentra rápido y no se satura con información secundaria.
+- Lenguaje sin tecnicismos innecesarios; recorridos fáciles de interpretar.
+- Siempre existen estados de carga, error y ausencia de información.
+- Se distingue visualmente entre información **confirmada**, **estimada** y **no disponible**, y se indica cuándo se actualizó por última vez.
+- Los tiempos se muestran como aproximaciones y se aclara cuando no hay datos de tráfico ni posición de vehículos en tiempo real.
+
+**PWA:** manifest correcto, instalable, service worker cuando corresponda y caché de recursos estáticos. La PWA **no** garantiza alertas en tiempo real sin conexión: todo dato guardado localmente se muestra con su fecha de actualización.
+
+## 12. Comandos y estructura del repositorio
+
+Antes de usar un comando, comprueba que existe en los scripts del proyecto. No lo supongas.
+
+| Acción | Comando |
+|---|---|
+| Instalar dependencias | TODO(confirmar) |
+| Levantar en desarrollo | TODO(confirmar) |
+| Pruebas | TODO(confirmar) |
+| Lint / formato | TODO(confirmar) |
+| Build | TODO(confirmar) |
+| Migraciones | TODO(confirmar) |
+| Docker | TODO(confirmar) |
+
+**Estructura:** TODO(confirmar) si es monorepo o repositorios separados, y agregar aquí el árbol comentado de carpetas.
+
+## 13. Git y documentación
+
+- Commits descriptivos; ramas con responsabilidad clara; Pull Requests cuando corresponda; `.gitignore` adecuado. TODO(confirmar) estrategia de ramas y convención de commits.
+- Documenta las decisiones técnicas importantes como ADR. Si una decisión cambia, actualiza los documentos afectados.
+- Idioma: la documentación y la comunicación con el desarrollador son en español. TODO(confirmar) idioma de los identificadores en el código.
+
+**Documentación de referencia (`/docs`)**
+
+Este archivo da el contexto y las reglas esenciales; el detalle vive en `/docs`. Lee el documento que corresponda antes de trabajar en ese tema.
+
+| Documento | Contiene | Léelo antes de... | Estado |
+|---|---|---|---|
+| `docs/fuentes-de-datos.md` | Fuentes investigadas, condiciones de uso, formato y fecha de obtención | Trabajar en ingesta o datos geográficos | pendiente |
+| `docs/requerimientos.md` | Requerimientos funcionales (F01–F05) y no funcionales | Definir o cambiar alcance | pendiente |
+| `docs/dominio.md` | Glosario, estados y reglas de negocio ampliadas | Tocar alertas, rutas o tiempos | pendiente |
+| `docs/arquitectura.md` | Componentes, flujo y límites entre capas | Cambios que cruzan componentes | pendiente |
+| `docs/adr/` | Decisiones arquitectónicas, una por archivo | Proponer o revisar decisiones técnicas | pendiente |
+| `docs/modelo-de-datos.md` | Tablas, relaciones y diagramas | Migraciones o consultas | pendiente |
+| `docs/api.md` | Endpoints y contratos | Cambiar o consumir la API | pendiente |
+| `docs/testing.md` | Estrategia de pruebas por componente | Escribir o cambiar pruebas | pendiente |
+| `docs/despliegue.md` | Docker, CI/CD, entornos y variables | Tocar infraestructura | pendiente |
+
+Reglas:
+
+- Un documento con estado `pendiente` **no existe todavía**: no supongas su contenido ni lo inventes; dilo y propón crearlo.
+- Cuando un detalle vive en un documento, este archivo conserva solo la regla esencial y el enlace. No dupliques información entre ambos.
+- Si un documento contradice este archivo, señálalo antes de actuar.
+- Cuando se cree un documento, cambia su estado a `creado` en esta tabla.
+
+## 14. Cómo trabajar
+
+**Memoria de trabajo (`MEMORY.md`, en la raíz del repositorio)**
+
+Este archivo define las reglas permanentes; `MEMORY.md` guarda lo temporal. AGENTS.md ordena y MEMORY.md ejecuta: si se contradicen, manda AGENTS.md.
+
+- **Al iniciar una sesión:** lee AGENTS.md y MEMORY.md antes de tocar nada. Resume en 2–3 líneas dónde quedó el trabajo y cuál es el siguiente paso, y pregunta si el desarrollador quiere cambiar la prioridad. Si MEMORY.md no existe, dilo y propón crearlo; no supongas el estado del proyecto.
+- **Al terminar cada tarea:** actualízalo. Mueve lo terminado, registra las decisiones nuevas con fecha y actualiza los siguientes pasos y los bloqueos.
+- **Qué va ahí:** estado actual, sesión actual, tareas en progreso, backlog corto, decisiones recientes, problemas abiertos, contexto temporal e historial breve de sesiones.
+- **Qué no va:** reglas permanentes (van en este archivo), detalle técnico extenso (va en `/docs`), conversaciones copiadas, ni secretos, tokens o credenciales.
+- **Poda:** máximo 100–150 líneas. Elimina tareas completadas hace más de 2 semanas, resume en una línea las sesiones de más de 5 atrás y borra las decisiones que ya quedaron en este archivo o en un ADR.
+- **Promoción:** si algo temporal se vuelve permanente (una regla, una convención), **propón** moverlo a este archivo o a `/docs`. No lo muevas sin aprobación del desarrollador.
+
+**Antes de cambiar algo**
+
+1. Entiende qué se pide y qué parte del sistema involucra.
+2. Revisa la estructura y los archivos relacionados; no modifiques archivos sin entender su responsabilidad.
+3. Comprueba si ya existe algo reutilizable. No dupliques funcionalidad ni cambies tecnologías sin justificación.
+4. Identifica efectos secundarios y propón algo coherente con la arquitectura actual.
+
+**Cuándo presentar un plan antes de implementar:** si el cambio toca más de 3 archivos, agrega una dependencia, cambia el esquema de datos o el contrato de la API, o crea un módulo nuevo. El plan incluye objetivo, archivos, cambios, dependencias, riesgos y pruebas. Los cambios pequeños y claros se hacen directamente.
+
+**Al proponer una solución:** explica qué problema resuelve, cómo funciona, qué limitaciones tiene y qué alternativas existen. Prefiere lo simple y mantenible sobre lo popular. No apliques un patrón de diseño sin una necesidad concreta.
+
+**Dependencias:** primero comprueba si el proyecto ya tiene solución; luego evalúa mantenimiento y compatibilidad, y explica por qué se necesita.
+
+**Errores:** encuentra la causa raíz y manéjalos en la capa que corresponde. Evita `try/catch` indiscriminados.
+
+**Código:** nombres descriptivos, funciones pequeñas con una sola responsabilidad, sin valores mágicos (usa constantes o configuración), comentarios solo donde aclaren algo complejo. TypeScript con tipado estricto.
+
+**Con el desarrollador:** actúa como colaborador técnico, no solo como generador de código. Explica los conceptos cuando haga falta, advierte sobre riesgos y, si una propuesta suya tiene problemas técnicos, dilos y ofrece alternativas. Ninguna decisión inicial es definitiva.
+
+## 15. Orden de construcción
+
+1. **Fundamentos:** validar fuentes de datos, requerimientos, arquitectura, modelo de datos y reglas de negocio.
+2. **Funcionalidad principal:** gestión de contingencias, ingesta, estaciones y líneas en el mapa, origen/destino, alternativas y tiempos.
+3. **Experiencia:** interfaz responsive, visualización y comparación de rutas, compartir, PWA.
+4. **Calidad y despliegue:** pruebas E2E y de carga, optimización, Docker, CI/CD, despliegue.
+
+Las pruebas unitarias y de integración acompañan cada funcionalidad (sección 10); el paso 4 completa esa base, no la reemplaza. El orden puede cambiar si hay una dependencia técnica o un hallazgo que lo justifique. El avance real de cada fase se registra en `MEMORY.md`, no aquí.
+
+## 16. Principio rector
+
+La prioridad no es construir más funcionalidades, sino resolver correctamente el problema principal del usuario con una solución técnicamente sólida, útil y verificable. Ante la duda, prioriza:
+
+1. Información confiable.
+2. Alternativas de movilidad coherentes.
+3. Estimaciones transparentes.
+4. Experiencia sencilla.
+5. Arquitectura mantenible y evolución incremental.
