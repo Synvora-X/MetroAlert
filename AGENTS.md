@@ -87,7 +87,7 @@ Versiones verificadas en el backend: NestJS 12.0.1, TypeScript 6.0.2, pnpm 11.6.
 - Python vs n8n para la ingesta.
 - Dónde se aloja el backend y el servicio de ingesta.
 - Proveedor de tiles del mapa para producción (el servidor público de OpenStreetMap tiene una política de uso que limita el tráfico alto).
-- Modelo de datos definitivo (se diseña a partir del dominio, no al revés).
+- Modelo de datos físico y migraciones (ADR-005 aceptado: PostGIS sí, pgRouting no; ver `docs/modelo-de-datos.md`).
 
 ## 5. Responsabilidad de cada componente
 
@@ -241,7 +241,7 @@ Los comandos actuales corresponden solo al backend (`backend/`), que es lo únic
 | Migraciones | TODO(confirmar) — no hay base de datos conectada. |
 | Docker | TODO(confirmar) — no hay Dockerfile ni compose. |
 
-**Estructura:** existe solo `backend/` (NestJS 12: `src/main.ts`, `src/app.module.ts`, `test/`); el frontend todavía no existe. Si será monorepo o repositorios separados sigue `TODO(confirmar)`. El backend escucha en `PORT` o 5000 por defecto.
+**Estructura:** existe solo `backend/` (NestJS 12: `src/main.ts`, `src/app.module.ts`, `test/`); el frontend todavía no existe. ADR-006 acepta un monorepo con destino `apps/api`, `apps/web` y `packages/contracts`; la migración es incremental y `backend/` se mantiene hasta el PR dedicado. El backend escucha en `PORT` o 5000 por defecto.
 
 ## 13. Git y documentación
 
@@ -271,15 +271,15 @@ Este archivo da el contexto y las reglas esenciales; el detalle vive en `/docs`.
 
 | Documento | Contiene | Léelo antes de... | Estado |
 |---|---|---|---|
-| `docs/fuentes-de-datos.md` | Fuentes investigadas, condiciones de uso, formato y fecha de obtención | Trabajar en ingesta o datos geográficos | pendiente |
+| `docs/fuentes-de-datos.md` | Fuentes investigadas, condiciones de uso, formato y fecha de obtención | Trabajar en ingesta o datos geográficos | creado |
 | `docs/requerimientos.md` | Requerimientos funcionales (RF), historias de usuario (HU), no funcionales (RNF) y cuestiones abiertas (CA) | Definir o cambiar alcance | creado |
-| `docs/dominio.md` | Glosario, estados y reglas de negocio ampliadas | Tocar alertas, rutas o tiempos | pendiente |
+| `docs/dominio.md` | Glosario, estados y reglas de negocio ampliadas | Tocar alertas, rutas o tiempos | creado |
 | `docs/arquitectura.md` | Componentes, flujo y límites entre capas | Cambios que cruzan componentes | creado |
-| `docs/adr/` | Decisiones arquitectónicas, una por archivo | Proponer o revisar decisiones técnicas | pendiente |
-| `docs/modelo-de-datos.md` | Tablas, relaciones y diagramas | Migraciones o consultas | pendiente |
-| `docs/api.md` | Endpoints y contratos | Cambiar o consumir la API | pendiente |
+| `docs/adr/` | Decisiones arquitectónicas, una por archivo | Proponer o revisar decisiones técnicas | creado |
+| `docs/modelo-de-datos.md` | Tablas, relaciones y diagramas | Migraciones o consultas | creado |
+| `docs/api.md` | Endpoints y contratos | Cambiar o consumir la API | creado |
 | `docs/testing.md` | Estrategia de pruebas por componente | Escribir o cambiar pruebas | creado |
-| `docs/despliegue.md` | Docker, CI/CD, entornos y variables | Tocar infraestructura | pendiente |
+| `docs/despliegue.md` | Docker, CI/CD, entornos y variables | Tocar infraestructura | creado |
 | `docs/tareas-de-investigacion.md` | Plan de estudio e investigación priorizado (tareas INV-01…INV-35, prioridades P0–P3) | Empezar trabajo de investigación o retomar el plan | creado |
 | `docs/funcionalidades-post-mvp.md` | Hoja de ruta post-MVP ("MetroAlerta 2.0") desmenuzada paso a paso (PM-01…PM-25, versiones V2/V3/V4) | Diseñar o proponer funcionalidades futuras | creado |
 | `docs/trazabilidad.md` | Matriz de trazabilidad F01–F05 → RF → HU → RNF → INV → PM y correspondencia INV ↔ PM | Revisar cobertura o cambiar un ID | creado |
@@ -290,11 +290,17 @@ Este archivo da el contexto y las reglas esenciales; el detalle vive en `/docs`.
 
 | Documento | Qué falta | Se completa cuando |
 |---|---|---|
-| `docs/requerimientos.md` | CA-01…CA-05 | Se cierren las decisiones y se validen los parámetros |
-| `docs/arquitectura.md` | ADR-001…ADR-006 y módulos sin implementar | Se acepten los ADR y exista código |
+| `docs/requerimientos.md` | CA-03 y CA-05; parámetros y umbrales | Se validen los parámetros y se midan los umbrales |
+| `docs/dominio.md` | Umbrales de severidad y reglas de parámetros | Se cierren las reglas pendientes |
+| `docs/arquitectura.md` | ADR-002/003/004 propuestos; módulos sin implementar | Se acepten los ADR y exista código |
+| `docs/adr/` | ADR-002, ADR-003 y ADR-004 propuestos | Se acepten ingesta, alojamiento y tiles |
+| `docs/fuentes-de-datos.md` | INV-01…INV-09 sin ejecutar | Se verifiquen las fuentes y sus condiciones |
+| `docs/modelo-de-datos.md` | Modelo físico pendiente de fuentes y migraciones | Se validen muestras y se creen migraciones |
+| `docs/api.md` | Contrato propuesto; endpoints sin implementar | Se implementen los endpoints y se congelen decisiones |
+| `docs/despliegue.md` | CD, Docker y hosting sin decidir | Se acepten ADR-002/003 y se configure el despliegue |
 | `docs/tareas-de-investigacion.md` | INV-01…INV-35 sin ejecutar | Se completen las asignaturas |
-| `docs/funcionalidades-post-mvp.md` | PC-01…PC-06 | Se apruebe el alcance post-MVP |
-| `docs/trazabilidad.md` | Huecos de cobertura | Se creen los documentos y se implementen los RF |
+| `docs/funcionalidades-post-mvp.md` | PC-01…PC-05 (PC-06 resuelto) | Se apruebe el alcance post-MVP |
+| `docs/trazabilidad.md` | Huecos de cobertura | Se implementen los RF |
 | `docs/testing.md` | Sin suites; CI sin pruebas | Se implementen las pruebas y se habilite CI |
 
 Al crear un documento nuevo, agrégalo aquí si le falta información. Cuando se cierre su última fila, retíralo de esta tabla.
