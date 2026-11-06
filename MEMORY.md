@@ -13,7 +13,8 @@
   - `docs/tareas-de-investigacion.md` — plan de estudio con 35 tareas (INV-01…INV-35) en 6 asignaturas, prioridades P0–P3. Estado: creado.
   - `docs/funcionalidades-post-mvp.md` — hoja de ruta post-MVP ("MetroAlerta 2.0") desmenuzada paso a paso (PM-01…PM-25, versiones V2/V3/V4). Estado: creado. Nada de allí está implementado ni aprobado para entrar al MVP.
   - `docs/trazabilidad.md` — matriz F01–F05 → RF → HU → RNF → INV → PM y correspondencia INV ↔ PM. Estado: creado.
-- La tabla de documentos de `AGENTS.md` §13 quedó actualizada con cinco documentos creados (requerimientos, arquitectura, tareas, funcionalidades-post-mvp y trazabilidad).
+  - `docs/testing.md` — estrategia de pruebas por componente, estado real del CI y pendientes. Estado: creado.
+- La tabla de documentos de `AGENTS.md` §13 quedó actualizada con seis documentos creados (requerimientos, arquitectura, tareas, funcionalidades-post-mvp, trazabilidad y testing).
 
 ## Tareas en progreso
 
@@ -49,7 +50,7 @@ Detalle y opciones en `docs/arquitectura.md` §10.
 
 - Sin fuentes de datos validadas ni muestras inspeccionadas (riesgo principal).
 - Cuestiones abiertas de `docs/requerimientos.md`: CA-01 (gestión manual de alertas), CA-02 (mecanismo de WhatsApp), CA-03/CA-05 (parámetros y umbrales por confirmar), CA-04 (granularidad contingencia→segmento).
-- `docs/dominio.md`, `docs/modelo-de-datos.md`, `docs/api.md`, `docs/testing.md`, `docs/despliegue.md` y `docs/adr/` siguen vacíos o sin crear.
+- `docs/dominio.md`, `docs/modelo-de-datos.md`, `docs/api.md`, `docs/despliegue.md` y `docs/adr/` siguen vacíos o sin crear.
 - `backend/MEMORY.md` está vacío y duplicaría este archivo: decidir si se elimina o si se usa solo para memoria específica del backend.
 
 ## Contexto temporal
@@ -65,3 +66,4 @@ Detalle y opciones en `docs/arquitectura.md` §10.
 - 2026-11-05 — Hoja de ruta post-MVP desmenuzada en `docs/funcionalidades-post-mvp.md` (PM-01…PM-25); fila agregada a `AGENTS.md` §13 con estado "creado".
 - 2026-11-05 — Auditoría y enriquecimiento: enlaces recuperados del JSON del chat, `docs/trazabilidad.md` creado, referencias cruzadas corregidas y `AGENTS.md` actualizado (jerarquía de fuentes, familias de IDs, comandos reales).
 - 2026-11-05 — Verificación final: IDs y tablas sin errores; los únicos enlaces "faltantes" son documentos pendientes (`dominio.md`, `api.md`, etc.); prueba de agente limpio 8/8. Se aclaró que un archivo vacío (`testing.md`) no cuenta como documento creado.
+- 2026-11-05 — Estrategia de pruebas creada en `docs/testing.md`; se documentó que `pnpm test` no encuentra suites y que el e2e esqueleto falla con 404, por lo que el CI mantiene las pruebas comentadas.

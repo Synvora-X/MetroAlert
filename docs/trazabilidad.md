@@ -99,7 +99,7 @@ Lectura de la matriz: una celda con varios IDs significa que la funcionalidad se
 - **PM-20**: el contrato va en `docs/api.md` (pendiente); los endpoints de la conversación son ejemplos propuestos, no existentes.
 - **PM-21 y PM-22**: dependen de `docs/fuentes-de-datos.md` (pendiente) y de ADR-002.
 - **PM-24**: toca exclusiones de `AGENTS.md` §2; requiere aprobación y ADR (PC-05).
-- Siguen pendientes: `docs/dominio.md`, `docs/modelo-de-datos.md`, `docs/api.md`, `docs/despliegue.md` y `docs/adr/`. `docs/testing.md` existe vacío y sigue en estado `pendiente`; no cuenta como documento creado.
+- Siguen pendientes: `docs/dominio.md`, `docs/modelo-de-datos.md`, `docs/api.md`, `docs/despliegue.md` y `docs/adr/`. `docs/testing.md` ya está creado con la estrategia de pruebas.
 
 ## 7. Mantenimiento
 

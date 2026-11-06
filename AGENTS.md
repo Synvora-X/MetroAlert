@@ -261,7 +261,7 @@ Este archivo da el contexto y las reglas esenciales; el detalle vive en `/docs`.
 | `docs/adr/` | Decisiones arquitectónicas, una por archivo | Proponer o revisar decisiones técnicas | pendiente |
 | `docs/modelo-de-datos.md` | Tablas, relaciones y diagramas | Migraciones o consultas | pendiente |
 | `docs/api.md` | Endpoints y contratos | Cambiar o consumir la API | pendiente |
-| `docs/testing.md` | Estrategia de pruebas por componente | Escribir o cambiar pruebas | pendiente |
+| `docs/testing.md` | Estrategia de pruebas por componente | Escribir o cambiar pruebas | creado |
 | `docs/despliegue.md` | Docker, CI/CD, entornos y variables | Tocar infraestructura | pendiente |
 | `docs/tareas-de-investigacion.md` | Plan de estudio e investigación priorizado (tareas INV-01…INV-35, prioridades P0–P3) | Empezar trabajo de investigación o retomar el plan | creado |
 | `docs/funcionalidades-post-mvp.md` | Hoja de ruta post-MVP ("MetroAlerta 2.0") desmenuzada paso a paso (PM-01…PM-25, versiones V2/V3/V4) | Diseñar o proponer funcionalidades futuras | creado |
