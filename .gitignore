@@ -1,0 +1,10 @@
+# Local agent skill installations (third-party content, restored with the skills CLI)
+.agents/skills/
+.opencode/skills/
+
+# Gentle AI local registry and cache
+.atl/
+
+# OS files
+.DS_Store
+Thumbs.db

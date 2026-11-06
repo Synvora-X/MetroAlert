@@ -6,6 +6,15 @@
 > - `TODO(confirmar)` marca datos que el desarrollador aún debe definir. No los inventes ni los des por hechos.
 > - Este archivo no registra progreso ni tareas: el estado actual, las tareas y las decisiones recientes viven en `MEMORY.md` (ver sección 14). Para saber qué está implementado de verdad, inspecciona además el repositorio.
 
+**Jerarquía de fuentes (si hay conflicto):**
+1. El código y la configuración real del repositorio.
+2. Este archivo (`AGENTS.md`).
+3. Los documentos de `/docs` (cada uno manda sobre su materia; ver tabla de la sección 13).
+4. `MEMORY.md` (estado temporal).
+5. La conversación "Plan de MetroAlerta" (contexto histórico; no es fuente de verdad).
+
+Toda contradicción se señala antes de actuar; no se silencia. **Estados de madurez:** `propuesta` (sin aprobar), `decisión` (ADR o aprobación explícita) e `implementado` (verificado en el código). **Lectura sugerida:** `AGENTS.md` → `MEMORY.md` → documento dueño del tema (sección 13).
+
 ---
 
 ## 1. Qué es MetroAlerta
@@ -60,7 +69,7 @@ La visión a largo plazo no es el alcance actual: ninguna funcionalidad futura e
 | Componente | Tecnología | Versión |
 |---|---|---|
 | Frontend | Next.js + TypeScript | TODO(confirmar) |
-| Backend | NestJS + TypeScript | TODO(confirmar) |
+| Backend | NestJS + TypeScript | 12.0.1 (verificado en `backend/package.json`) |
 | Base de datos | Supabase / PostgreSQL | TODO(confirmar) |
 | Mapas | Leaflet + OpenStreetMap | TODO(confirmar) |
 | Ingesta | Python o n8n (por decidir) | TODO(confirmar) |
@@ -69,6 +78,8 @@ La visión a largo plazo no es el alcance actual: ninguna funcionalidad futura e
 | Despliegue frontend | Vercel | — |
 
 Que una tecnología aparezca aquí **no significa que esté configurada o implementada**. Verifícalo en el repositorio antes de usarla.
+
+Versiones verificadas en el backend: NestJS 12.0.1, TypeScript 6.0.2, pnpm 11.6.0, Vitest 4.1.2, oxlint 1.58.0, prettier 3.4.2 y Supertest 7.0.0. Las del frontend, base de datos, ingesta, Docker y CI siguen `TODO(confirmar)`.
 
 **Decisiones abiertas** (no las tomes por tu cuenta; proponlas como ADR):
 
@@ -134,6 +145,7 @@ La disponibilidad y calidad de los datos es el principal riesgo técnico del pro
 - Maneja errores y datos no disponibles de forma explícita.
 - La información geográfica vive separada de los componentes visuales, para actualizarla sin tocar la UI.
 - Si usas OpenStreetMap, muestra la atribución requerida y respeta su política de uso.
+- Toda fuente citada debe ser rastreable a un enlace o a una fuente identificable. Si el enlace no se conserva, se marca `por localizar` y no se presenta como cita.
 
 **Datos simulados:** permitidos para desarrollo y pruebas, siempre identificados como simulados, separados de los reales, con estructura compatible con el modelo esperado y capaces de reproducir escenarios de contingencia.
 
@@ -216,17 +228,19 @@ El usuario probablemente está en una situación de incertidumbre y con poco tie
 
 Antes de usar un comando, comprueba que existe en los scripts del proyecto. No lo supongas.
 
+Los comandos actuales corresponden solo al backend (`backend/`), que es lo único implementado. Ejecutar desde la raíz del repositorio.
+
 | Acción | Comando |
 |---|---|
-| Instalar dependencias | TODO(confirmar) |
-| Levantar en desarrollo | TODO(confirmar) |
-| Pruebas | TODO(confirmar) |
-| Lint / formato | TODO(confirmar) |
-| Build | TODO(confirmar) |
-| Migraciones | TODO(confirmar) |
-| Docker | TODO(confirmar) |
+| Instalar dependencias | `cd backend && pnpm install` |
+| Levantar en desarrollo | `cd backend && pnpm start:dev` |
+| Pruebas | `cd backend && pnpm test` · `cd backend && pnpm test:e2e` · `cd backend && pnpm test:cov` |
+| Lint / formato | `cd backend && pnpm lint` · `cd backend && pnpm format` · `cd backend && pnpm format:check` |
+| Build | `cd backend && pnpm build` |
+| Migraciones | TODO(confirmar) — no hay base de datos conectada. |
+| Docker | TODO(confirmar) — no hay Dockerfile ni compose. |
 
-**Estructura:** TODO(confirmar) si es monorepo o repositorios separados, y agregar aquí el árbol comentado de carpetas.
+**Estructura:** existe solo `backend/` (NestJS 12: `src/main.ts`, `src/app.module.ts`, `test/`); el frontend todavía no existe. Si será monorepo o repositorios separados sigue `TODO(confirmar)`. El backend escucha en `PORT` o 5000 por defecto.
 
 ## 13. Git y documentación
 
@@ -241,14 +255,33 @@ Este archivo da el contexto y las reglas esenciales; el detalle vive en `/docs`.
 | Documento | Contiene | Léelo antes de... | Estado |
 |---|---|---|---|
 | `docs/fuentes-de-datos.md` | Fuentes investigadas, condiciones de uso, formato y fecha de obtención | Trabajar en ingesta o datos geográficos | pendiente |
-| `docs/requerimientos.md` | Requerimientos funcionales (F01–F05) y no funcionales | Definir o cambiar alcance | pendiente |
+| `docs/requerimientos.md` | Requerimientos funcionales (RF), historias de usuario (HU), no funcionales (RNF) y cuestiones abiertas (CA) | Definir o cambiar alcance | creado |
 | `docs/dominio.md` | Glosario, estados y reglas de negocio ampliadas | Tocar alertas, rutas o tiempos | pendiente |
-| `docs/arquitectura.md` | Componentes, flujo y límites entre capas | Cambios que cruzan componentes | pendiente |
+| `docs/arquitectura.md` | Componentes, flujo y límites entre capas | Cambios que cruzan componentes | creado |
 | `docs/adr/` | Decisiones arquitectónicas, una por archivo | Proponer o revisar decisiones técnicas | pendiente |
 | `docs/modelo-de-datos.md` | Tablas, relaciones y diagramas | Migraciones o consultas | pendiente |
 | `docs/api.md` | Endpoints y contratos | Cambiar o consumir la API | pendiente |
-| `docs/testing.md` | Estrategia de pruebas por componente | Escribir o cambiar pruebas | pendiente |
+| `docs/testing.md` | Estrategia de pruebas por componente | Escribir o cambiar pruebas | creado |
 | `docs/despliegue.md` | Docker, CI/CD, entornos y variables | Tocar infraestructura | pendiente |
+| `docs/tareas-de-investigacion.md` | Plan de estudio e investigación priorizado (tareas INV-01…INV-35, prioridades P0–P3) | Empezar trabajo de investigación o retomar el plan | creado |
+| `docs/funcionalidades-post-mvp.md` | Hoja de ruta post-MVP ("MetroAlerta 2.0") desmenuzada paso a paso (PM-01…PM-25, versiones V2/V3/V4) | Diseñar o proponer funcionalidades futuras | creado |
+| `docs/trazabilidad.md` | Matriz de trazabilidad F01–F05 → RF → HU → RNF → INV → PM y correspondencia INV ↔ PM | Revisar cobertura o cambiar un ID | creado |
+
+**Familias de identificadores y formato de referencias:**
+
+| Familia | Significado | Documento dueño |
+|---|---|---|
+| `F0x` | Funcionalidades del MVP | `AGENTS.md` sección 2 |
+| `RF-xx` | Requerimientos funcionales | `docs/requerimientos.md` |
+| `RNF-xx` | Requerimientos no funcionales | `docs/requerimientos.md` |
+| `HU-xx` | Historias de usuario | `docs/requerimientos.md` |
+| `CA-xx` | Cuestiones abiertas del MVP | `docs/requerimientos.md` |
+| `INV-xx` | Tareas de investigación | `docs/tareas-de-investigacion.md` |
+| `PM-xx` | Funcionalidades post-MVP | `docs/funcionalidades-post-mvp.md` |
+| `PC-xx` | Cuestiones abiertas post-MVP | `docs/funcionalidades-post-mvp.md` |
+| `ADR-xxx` | Decisiones arquitectónicas | `docs/adr/` |
+
+Formato de referencia: dentro del mismo documento, `§X`; entre documentos, `AGENTS.md` §X o `docs/<documento>.md` §X; para el chat, `conversación §X`. Si el documento no está claro por el contexto, indícalo siempre.
 
 Reglas:
 
@@ -256,6 +289,8 @@ Reglas:
 - Cuando un detalle vive en un documento, este archivo conserva solo la regla esencial y el enlace. No dupliques información entre ambos.
 - Si un documento contradice este archivo, señálalo antes de actuar.
 - Cuando se cree un documento, cambia su estado a `creado` en esta tabla.
+- Si el documento no está en la tabla, agrégalo con estado `creado` en el mismo cambio en que se crea.
+- Un archivo vacío no cuenta como documento creado: su estado sigue `pendiente` y no se supone su contenido.
 
 ## 14. Cómo trabajar
 
@@ -263,7 +298,7 @@ Reglas:
 
 Este archivo define las reglas permanentes; `MEMORY.md` guarda lo temporal. AGENTS.md ordena y MEMORY.md ejecuta: si se contradicen, manda AGENTS.md.
 
-- **Al iniciar una sesión:** lee AGENTS.md y MEMORY.md antes de tocar nada. Resume en 2–3 líneas dónde quedó el trabajo y cuál es el siguiente paso, y pregunta si el desarrollador quiere cambiar la prioridad. Si MEMORY.md no existe, dilo y propón crearlo; no supongas el estado del proyecto.
+- **Al iniciar una sesión:** lee `AGENTS.md`, `MEMORY.md` y la tabla de la sección 13; abre solo el documento dueño del tema. Resume en 2–3 líneas dónde quedó el trabajo y cuál es el siguiente paso, y pregunta si el desarrollador quiere cambiar la prioridad. Si MEMORY.md no existe, dilo y propón crearlo; no supongas el estado del proyecto.
 - **Al terminar cada tarea:** actualízalo. Mueve lo terminado, registra las decisiones nuevas con fecha y actualiza los siguientes pasos y los bloqueos.
 - **Qué va ahí:** estado actual, sesión actual, tareas en progreso, backlog corto, decisiones recientes, problemas abiertos, contexto temporal e historial breve de sesiones.
 - **Qué no va:** reglas permanentes (van en este archivo), detalle técnico extenso (va en `/docs`), conversaciones copiadas, ni secretos, tokens o credenciales.
