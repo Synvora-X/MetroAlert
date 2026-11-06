@@ -288,20 +288,22 @@ Este archivo da el contexto y las reglas esenciales; el detalle vive en `/docs`.
 
 `creado` significa que el archivo existe, no que esté completo. Los documentos con datos o decisiones abiertas se listan aquí y no se presentan como terminados.
 
-| Documento | Qué falta | Se completa cuando |
-|---|---|---|
-| `docs/requerimientos.md` | CA-03 y CA-05; parámetros y umbrales | Se validen los parámetros y se midan los umbrales |
-| `docs/dominio.md` | Umbrales de severidad y reglas de parámetros | Se cierren las reglas pendientes |
-| `docs/arquitectura.md` | ADR-002/003/004 propuestos; módulos sin implementar | Se acepten los ADR y exista código |
-| `docs/adr/` | ADR-002, ADR-003 y ADR-004 propuestos | Se acepten ingesta, alojamiento y tiles |
-| `docs/fuentes-de-datos.md` | INV-01…INV-09 sin ejecutar | Se verifiquen las fuentes y sus condiciones |
-| `docs/modelo-de-datos.md` | Modelo físico pendiente de fuentes y migraciones | Se validen muestras y se creen migraciones |
-| `docs/api.md` | Contrato propuesto; endpoints sin implementar | Se implementen los endpoints y se congelen decisiones |
-| `docs/despliegue.md` | CD, Docker y hosting sin decidir | Se acepten ADR-002/003 y se configure el despliegue |
-| `docs/tareas-de-investigacion.md` | INV-01…INV-35 sin ejecutar | Se completen las asignaturas |
-| `docs/funcionalidades-post-mvp.md` | PC-01…PC-05 (PC-06 resuelto) | Se apruebe el alcance post-MVP |
-| `docs/trazabilidad.md` | Huecos de cobertura | Se implementen los RF |
-| `docs/testing.md` | Sin suites; CI sin pruebas | Se implementen las pruebas y se habilite CI |
+| Documento | Qué falta | Se completa cuando | Cómo completarlo |
+|---|---|---|---|
+| `docs/requerimientos.md` | CA-03 y CA-05; parámetros y umbrales | Se validen los parámetros y se midan los umbrales | Medir velocidades y tiempos con fuentes; ejecutar pruebas de carga; actualizar la tabla de cuestiones abiertas |
+| `docs/dominio.md` | Umbrales de severidad y reglas de parámetros | Se cierren las reglas pendientes | Definir reglas y umbrales de severidad; documentar parámetros y fuentes; revisar PC-02/04/05 |
+| `docs/arquitectura.md` | ADR-002/003/004 propuestos; módulos sin implementar | Se acepten los ADR y exista código | Cerrar ADR-002/003/004; implementar módulos; actualizar diagramas y estados |
+| `docs/adr/` | ADR-002, ADR-003 y ADR-004 propuestos | Se acepten ingesta, alojamiento y tiles | Comparar opciones, decidir, cambiar estado a aceptado y actualizar arquitectura/trazabilidad |
+| `docs/fuentes-de-datos.md` | INV-01…INV-09 sin ejecutar | Se verifiquen las fuentes y sus condiciones | Ejecutar INV-01…09; registrar URL, fecha, muestra, licencia y estado; descartar fuentes no viables |
+| `docs/modelo-de-datos.md` | Modelo físico pendiente de fuentes y migraciones | Se validen muestras y se creen migraciones | Validar muestras; crear migraciones y RLS; medir índices; actualizar el ER |
+| `docs/api.md` | Contrato propuesto; endpoints sin implementar | Se implementen los endpoints y se congelen decisiones | Implementar endpoints; congelar auth, paginación y versionado; generar OpenAPI y pruebas |
+| `docs/despliegue.md` | CD, Docker y hosting sin decidir | Se acepten ADR-002/003 y se configure el despliegue | Cerrar ADR-002/003; definir Docker, entornos y CD; actualizar workflow y runbook |
+| `docs/tareas-de-investigacion.md` | INV-01…INV-35 sin ejecutar | Se completen las asignaturas | Ejecutar asignaturas; marcar `[x]`; actualizar documentos destino |
+| `docs/funcionalidades-post-mvp.md` | PC-01…PC-05 (PC-06 resuelto) | Se apruebe el alcance post-MVP | Aprobar alcance V2/V3/V4; cerrar PC-01…05; convertir PM aprobadas en tareas |
+| `docs/trazabilidad.md` | Huecos de cobertura | Se implementen los RF | Implementar RF; actualizar matriz; cerrar huecos |
+| `docs/testing.md` | Sin suites; CI sin pruebas | Se implementen las pruebas y se habilite CI | Crear suites unitarias/e2e; reemplazar esqueleto; habilitar tests en CI |
+
+La columna **“Cómo completarlo”** es la ruta mínima de trabajo; no sustituye las tareas de investigación ni las decisiones registradas en los ADR.
 
 Al crear un documento nuevo, agrégalo aquí si le falta información. Cuando se cierre su última fila, retíralo de esta tabla.
 
