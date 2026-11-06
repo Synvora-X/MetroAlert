@@ -14,7 +14,7 @@
 - Marcar tareas con `[x]` al completarse. Al terminar cada una, registrar el avance en `MEMORY.md` y actualizar el documento de destino.
 - **Pista:** dato mencionado en la conversación o en `AGENTS.md` que sirve como punto de partida, pero **debe verificarse** (vigencia, fuente, condiciones) antes de usarse. Una pista no es un dato confirmado.
 - Los enlaces recuperados del chat son pistas, no confirmaciones: cada tarea debe verificar que sigan vigentes y sus condiciones de uso (INV-08).
-- Normalmente las tareas completadas alimentan documentos que aún están pendientes según `AGENTS.md` §13: `fuentes-de-datos.md`, `dominio.md`, `modelo-de-datos.md`, `api.md`, `testing.md`, `despliegue.md`, `adr/*`.
+- Normalmente las tareas completadas alimentan los documentos existentes: `docs/fuentes-de-datos.md`, `docs/dominio.md`, `docs/modelo-de-datos.md`, `docs/api.md`, `docs/testing.md`, `docs/despliegue.md` y `docs/adr/`. Los que aún tienen información pendiente se listan en `AGENTS.md` §13.
 
 **Reglas de honestidad que aplican a toda investigación:**
 - Todo dato identificado lleva fuente, fecha de obtención y (si aplica) condiciones de uso.

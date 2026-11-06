@@ -202,7 +202,7 @@ Las cuatro que la conversación recomienda investigar primero tras el MVP: mante
 2. Fuente de datos de mantenimientos: investigar primero (INV-31 del plan de estudio); sin fuente verificable para las fechas, no se promete el aviso anticipado.
 3. Calendario consultable (qué está programado, cuándo empieza y termina, qué afecta, qué alternativas recomienda el sistema para ese periodo).
 4. Alertas anticipadas: notificación previa a usuarios cuyo recorrido habitual se verá afectado, siempre que la fuente oficial permita conocer las fechas (ejemplo de la conversación: "el próximo sábado se realizará un mantenimiento que afectará tu recorrido habitual").
-5. Relación con las contingencias: el modelo de datos de mantenimientos queda como **decisión abierta PC-06**; un mantenimiento futuro no encaja en los tres estados de alerta del MVP (activa / resuelta / vigencia indeterminada).
+5. Relación con las contingencias: **PC-06 resuelto**: el mantenimiento es una entidad separada (`Maintenance`) con estados propios; no es un cuarto estado de alerta. Al entrar en curso puede crear o vincularse a una alerta.
 
 ### PM-10 — Reportes ciudadanos con moderación
 
@@ -472,4 +472,4 @@ Consejo de la conversación: no intentar implementar todo; construir una base s�
 | PC-03 | Fuente de datos de accesibilidad (PM-05) y de mantenimientos (PM-09): sin fuente verificada no se construyen. | INV-31 e INV-33 del plan de estudio |
 | PC-04 | Contrato de la API institucional (PM-20): los endpoints de la conversación son ejemplos propuestos, no existentes. | Por definir en `docs/api.md` |
 | PC-05 | Posición de V4 frente a las exclusiones de `AGENTS.md` §2: aprobación y ADR dedicados. | Por decidir |
-| PC-06 | Modelo de estados de los mantenimientos programados: entidad separada (módulo `maintenance`) vs. un cuarto estado de alerta (opción hipotética; hoy la regla son tres estados). Si se elige el cuarto estado, impacta `AGENTS.md` §6 y RF-02. | Por decidir (propone ADR) |
+| PC-06 | Modelo de estados de los mantenimientos programados. | **Resuelto:** entidad separada `Maintenance`; no es un cuarto estado de alerta. Ver `docs/dominio.md` y `docs/modelo-de-datos.md`. |

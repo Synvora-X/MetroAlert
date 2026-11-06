@@ -130,6 +130,7 @@ No se agregan dependencias de prueba sin justificarlo y aprobarlo (`AGENTS.md` �
 - Toda RF/HU implementada debe tener al menos una prueba que la nombre.
 - Reglas críticas obligatorias: RF-10/RNF-03 (exclusión de segmentos), RF-12 (sin datos), RF-13/RF-14 (tiempo y metadatos), RF-02/RF-03 (estados y verificación).
 - Una funcionalidad no está terminada sin pruebas (`AGENTS.md` §10).
+- `docs/dominio.md` es la fuente del lenguaje y las reglas; `docs/modelo-de-datos.md` traduce esas reglas a tablas; `docs/api.md` define el contrato HTTP.
 - Trazabilidad: `docs/trazabilidad.md`.
 
 ## 9. Pendientes

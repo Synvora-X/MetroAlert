@@ -71,35 +71,35 @@ Lectura de la matriz: una celda con varios IDs significa que la funcionalidad se
 
 | ID | Tema | Documento dueño | Estado |
 |---|---|---|---|
-| CA-01 | Gestión manual de alertas (panel protegido vs. base de datos/simulados) | `docs/requerimientos.md` | Por decidir |
-| CA-02 | Mecanismo de envío para compartir por WhatsApp | `docs/requerimientos.md` | Por decidir |
+| CA-01 | Gestión manual de alertas (panel protegido vs. base de datos/simulados) | `docs/requerimientos.md` | **Resuelto:** panel mínimo protegido |
+| CA-02 | Mecanismo de envío para compartir por WhatsApp | `docs/requerimientos.md` | **Resuelto:** `wa.me` + Web Share |
 | CA-03 | Valores de los parámetros de estimación | `docs/requerimientos.md` | TODO(confirmar) |
-| CA-04 | Granularidad contingencia → segmentos afectados | `docs/requerimientos.md` | Por definir |
+| CA-04 | Granularidad contingencia → segmentos afectados | `docs/requerimientos.md` | **Resuelto:** por conexión (ADR-005) |
 | CA-05 | Umbrales de rendimiento | `docs/requerimientos.md` | TODO(confirmar) |
 | PC-01 | Alcance exacto de V2 tras el MVP | `docs/funcionalidades-post-mvp.md` | Por decidir |
 | PC-02 | Modelo de clientes para pasajeros (anónimo vs. cuenta) | `docs/funcionalidades-post-mvp.md` | Por decidir |
 | PC-03 | Fuentes de accesibilidad y de mantenimientos | `docs/funcionalidades-post-mvp.md` | INV-31 e INV-33 |
 | PC-04 | Contrato de la API institucional | `docs/funcionalidades-post-mvp.md` | Por definir en `docs/api.md` |
 | PC-05 | Posición de V4 frente a las exclusiones de `AGENTS.md` §2 | `docs/funcionalidades-post-mvp.md` | Por decidir |
-| PC-06 | Modelo de estados de los mantenimientos programados | `docs/funcionalidades-post-mvp.md` | Por decidir (propone ADR) |
-| ADR-001 | Estilo arquitectónico global | `docs/arquitectura.md` §10 | Pendiente |
-| ADR-002 | Tecnología de ingesta (Python vs. n8n) | `docs/arquitectura.md` §10 | Pendiente |
-| ADR-003 | Alojamiento del backend y de la ingesta | `docs/arquitectura.md` §10 | Pendiente |
-| ADR-004 | Proveedor de tiles para producción | `docs/arquitectura.md` §10 | Pendiente |
-| ADR-005 | Modelo de datos definitivo (incl. PostGIS) | `docs/arquitectura.md` §10 | Pendiente |
-| ADR-006 | Estructura del repositorio (monorepo vs. separado) | `docs/arquitectura.md` §10 | Pendiente |
+| PC-06 | Modelo de estados de los mantenimientos programados | `docs/funcionalidades-post-mvp.md` | **Resuelto:** entidad `Maintenance` separada |
+| ADR-001 | Estilo arquitectónico global | `docs/adr/0001-estilo-arquitectonico.md` | Aceptado |
+| ADR-002 | Tecnología de ingesta (Python vs. n8n) | `docs/adr/0002-tecnologia-ingesta.md` | Propuesto |
+| ADR-003 | Alojamiento del backend y de la ingesta | `docs/adr/0003-alojamiento.md` | Propuesto |
+| ADR-004 | Proveedor de tiles para producción | `docs/adr/0004-tiles-produccion.md` | Propuesto |
+| ADR-005 | Modelo de datos y PostGIS | `docs/adr/0005-modelo-datos-postgis.md` | Aceptado |
+| ADR-006 | Estructura del repositorio (monorepo) | `docs/adr/0006-estructura-repositorio.md` | Aceptado |
 
 ## 6. Huecos y notas de cobertura
 
-- **F01**: no hay RF para la interfaz de administración de alertas; el MVP puede operar con registro manual/simulado (CA-01).
+- **F01**: CA-01 resuelto (panel mínimo protegido); el contrato de administración está en `docs/api.md`.
 - **RNF-14**: sin umbrales medidos todavía (CA-05).
-- **PM-01 y PM-02**: dependen de la fuente de alertas (INV-07) y de una taxonomía de dominio (`docs/dominio.md`, pendiente).
-- **PM-09 y PM-19**: dependen de la fuente de mantenimientos (INV-31) y de PC-06.
+- **PM-01 y PM-02**: dependen de la fuente de alertas (INV-07) y de la taxonomía de `docs/dominio.md`.
+- **PM-09 y PM-19**: dependen de la fuente de mantenimientos (INV-31); PC-06 resuelto.
 - **PM-05**: depende de datos de accesibilidad (INV-33), que probablemente no existen aún.
-- **PM-20**: el contrato va en `docs/api.md` (pendiente); los endpoints de la conversación son ejemplos propuestos, no existentes.
-- **PM-21 y PM-22**: dependen de `docs/fuentes-de-datos.md` (pendiente) y de ADR-002.
+- **PM-20**: el contrato propuesto está en `docs/api.md`; los endpoints de la conversación son ejemplos, no implementaciones.
+- **PM-21 y PM-22**: dependen de `docs/fuentes-de-datos.md` y de ADR-002.
 - **PM-24**: toca exclusiones de `AGENTS.md` §2; requiere aprobación y ADR (PC-05).
-- Siguen pendientes: `docs/dominio.md`, `docs/modelo-de-datos.md`, `docs/api.md`, `docs/despliegue.md` y `docs/adr/`. `docs/testing.md` ya está creado con la estrategia de pruebas.
+- No quedan documentos pendientes en la tabla de `AGENTS.md` §13. La completitud de cada documento se sigue en la sección “Documentos creados con información pendiente”.
 
 ## 7. Mantenimiento
 
@@ -107,4 +107,4 @@ Lectura de la matriz: una celda con varios IDs significa que la funcionalidad se
 - Al cerrar una decisión: cambiar su estado aquí y registrar el ADR o la aprobación.
 - Al aprobar una funcionalidad post-MVP: moverla al alcance del MVP solo si se actualiza `AGENTS.md` §2 y se documenta el ADR.
 
-Última revisión: 2026-11-05.
+Última revisión: 2026-11-06.

@@ -8,18 +8,18 @@
 | Alcance | Detalla los componentes, el backend modular y sus límites. Las responsabilidades por componente (frontend/backend/BD/ingesta) se definen en `AGENTS.md` §5; aquí se concretan en módulos y capas, no se duplican. |
 
 **Advertencias de honestidad:**
-- La arquitectura descrita aquí es la **propuesta de referencia** derivada de la conversación, alineada con los límites de `AGENTS.md`. La decisión formal se registra en ADRs, que aún no existen (`AGENTS.md` §13 los lista como pendientes). Ver §10.
+- La arquitectura descrita aquí es la **propuesta de referencia** derivada de la conversación, alineada con los límites de `AGENTS.md`. Las decisiones formales viven en `docs/adr/`: ADR-001, ADR-005 y ADR-006 aceptados; ADR-002, ADR-003 y ADR-004 propuestos. Ver §10.
 - **El código manda:** al 2026-11-05 el backend es el esqueleto NestJS por defecto (`backend/src/main.ts` + `backend/src/app.module.ts`, sin módulos). Lo descrito abajo se adopta de forma incremental conforme se implemente; lo que se marca "ya en el repo" refleja lo verificado.
 
 ---
 
 ## 1. Visión general
 
-Estilo propuesto: **monolito modular + Clean Architecture + DDD ligero**.
+Estilo adoptado (ADR-001): **monolito modular + Clean Architecture + DDD ligero**.
 
 - **Un solo backend desplegable** (NestJS) dividido en módulos con responsabilidades y límites claros.
 - Dentro de cada módulo, separación de capas para que las reglas de negocio no dependan de proveedores concretos (Supabase, n8n, tiles, fuentes externas).
-- El diseño de dominio se organiza alrededor de los conceptos del negocio (línea, estación, paradero, alerta, contingencia, ruta alternativa, transbordo — glosario en `AGENTS.md` §6 y en `docs/dominio.md` (pendiente)).
+- El diseño de dominio se organiza alrededor de los conceptos del negocio (línea, estación, paradero, alerta, contingencia, ruta alternativa, transbordo — glosario en `AGENTS.md` §6 y en `docs/dominio.md`).
 - **No microservicios.** El servicio de ingesta es un proceso separado, no una arquitectura distribuida (regla de `AGENTS.md` §5).
 
 La motivación arquitectónica no es académica: el cálculo de rutas es el corazón del problema (las estaciones y paraderos son nodos, las conexiones son aristas con costo en tiempo, y una contingencia deshabilita aristas). Ese motor debe poder evolucionar —cambiar de algoritmo, de almacenamiento o de fuente de datos— sin arrastrar controladores HTTP, consultas a la base de datos ni la UI.
@@ -31,7 +31,7 @@ Componentes y responsabilidades por componente: ver `AGENTS.md` §5 (tabla autor
 ```mermaid
 flowchart TD
     U(("Usuario<br/>Valle de Aburrá")) --> FE["Next.js — PWA<br/>UI · mapa Leaflet · origen/destino<br/>estados · compartir"]
-    FE -- "HTTP / REST<br/>(contratos en docs/api.md, pendiente)" --> BE["NestJS — monolito modular"]
+    FE -- "HTTP / REST<br/>(contrato en docs/api.md)" --> BE["NestJS — monolito modular"]
 
     subgraph MOD["Módulos del backend"]
         M1["alerts"]
@@ -60,9 +60,9 @@ Reglas del diagrama:
 
 ## 3. Estructura del repositorio
 
-Situación real del repositorio (2026-11-05): `backend/` existe (NestJS + Vitest + oxlint + pnpm, esqueleto); el frontend aún no existe; si será monorepo está pendiente de definir (`AGENTS.md` §12, TODO(confirmar)).
+Situación real del repositorio (2026-11-06): `backend/` existe (NestJS + Vitest + oxlint + pnpm, esqueleto); el frontend aún no existe. ADR-006 acepta un monorepo con destino `apps/api`, `apps/web` y `packages/contracts`; la migración es incremental y `backend/` se mantiene hasta el PR dedicado.
 
-Estructura propuesta para el backend (se incorpora módulo por módulo según se necesite; no crear 40 carpetas vacías):
+Estructura interna propuesta para el backend (se incorpora módulo por módulo según se necesite; no crear 40 carpetas vacías):
 
 ```text
 backend/src/
@@ -86,7 +86,7 @@ backend/src/
 └── config/                    # configuración y parámetros
 ```
 
-Si se define monorepo, los contratos compartidos entre frontend y backend (tipos de respuesta, DTOs de la API) irían en un paquete aparte (`packages/contracts`). Regla: solo comparten **interfaces de comunicación**; nunca entidades de dominio ni implementaciones internas. El detalle de los contratos va en `docs/api.md` (pendiente) y el del modelo de datos en `docs/modelo-de-datos.md` (pendiente).
+ADR-006 define un monorepo con destino `apps/api`, `apps/web` y `packages/contracts`; los contratos compartidos entre frontend y backend (tipos de respuesta, DTOs de la API) irían en `packages/contracts`. Regla: solo comparten **interfaces de comunicación**; nunca entidades de dominio ni implementaciones internas. El detalle de los contratos va en `docs/api.md` y el del modelo de datos en `docs/modelo-de-datos.md`.
 
 ## 4. Módulos del backend
 
@@ -96,7 +96,7 @@ Si se define monorepo, los contratos compartidos entre frontend y backend (tipos
 | `transport` | Red de transporte: líneas, estaciones, paraderos, rutas, conexiones, tiempos estimados, geometrías; importación de datos (GTFS/ArcGIS) cuando haya fuentes validadas. | Inventar estaciones, paraderos o tiempos que no provengan de datos con origen explícito. | `GetTransportNetwork`, `GetNearbyStops`, `ImportTransportData`, `GetTransportLine` |
 | `route-engine` | Construir el grafo, calcular alternativas (≤3, sin segmentos afectados) y estimar tiempos con parámetros configurables. | Dibujar mapas, gestionar alertas, consultar la UI o decidir qué es una contingencia. | `CalculateAlternativeRoutes`, `BuildTransportGraph`, `FindShortestPath`, `FindAlternativePaths`, `CalculateJourneyDuration` |
 | `geolocation` | Validar coordenadas, calcular distancias, encontrar nodos cercanos. En el MVP puede integrarse dentro de `transport`/`route-engine` si no se justifica un módulo propio. | Obtener ubicación sin permiso explícito o persistirla sin decisión documentada. | `ValidateCoordinates`, `FindNearbyStops` |
-| `sharing` | Armar el mensaje compartible (origen, destino, medios, estaciones/paraderos, tiempo estimado marcado como aproximado, contingencia relacionada). | Enviar el mensaje por su cuenta o llamar a la API oficial de WhatsApp: el envío ocurre en el dispositivo del usuario (mecanismo por decidir: CA-02 de `requerimientos.md`). | `BuildShareMessage` |
+| `sharing` | Armar el mensaje compartible (origen, destino, medios, estaciones/paraderos, tiempo estimado marcado como aproximado, contingencia relacionada). | Enviar el mensaje por su cuenta o llamar a la API oficial de WhatsApp: el envío ocurre en el dispositivo del usuario (CA-02 resuelto: `wa.me` + Web Share; ver `docs/api.md`). | `BuildShareMessage` |
 | `shared` (carpeta, no módulo) | Filtros de excepción, utilidades, tipos comunes. | Contener reglas de negocio. | — |
 
 Nota de idioma: los nombres de módulos/casos de uso se escriben en inglés por congruencia con la conversación; el idioma de identificadores en el código es TODO(confirmar) en `AGENTS.md` §13.
@@ -204,18 +204,18 @@ Reglas completas en `AGENTS.md` §9 (fuente de verdad). Resumen de su reflejo ar
 - Permisos de la base de datos explícitos (RLS en cualquier tabla expuesta).
 - Secretos en variables de entorno; `.env.example` sin valores.
 
-## 10. Decisiones por ratificar (→ ADRs pendientes)
+## 10. Decisiones arquitectónicas (ADR)
 
-Las decisiones se formalizan en ADRs (`docs/adr/`, carpeta pendiente). Mientras no existan, lo descrito arriba es la propuesta de referencia. La correspondencia de IDs y decisiones abiertas está en `docs/trazabilidad.md`:
+Las decisiones se formalizan en `docs/adr/` (índice en `docs/adr/README.md`). La correspondencia de IDs y decisiones abiertas está en `docs/trazabilidad.md`:
 
-| ADR propuesto | Decisión a documentar | Opciones |
-|---|---|---|
-| 001 | Estilo arquitectónico global: monolito modular + Clean Architecture + DDD ligero | vs. microservicios (descartados por alcance), vs. Next.js solo + funciones serverless |
-| 002 | Tecnología de ingesta | Python vs n8n (`AGENTS.md` §4) |
-| 003 | Alojamiento del backend y de la ingesta | Opciones por evaluar: Railway (citado en la conversación para la ingesta); Render solo como ejemplo. Vercel queda para el frontend |
-| 004 | Proveedor de tiles para producción | OpenStreetMap público tiene límites de política de uso (`AGENTS.md` §4) |
-| 005 | Modelo de datos definitivo (incl. PostGIS sí/no y granularidad contingencia→segmento, CA-04 de `requerimientos.md`) | Por diseñar desde el dominio (`AGENTS.md` §4) |
-| 006 | Estructura del repositorio (monorepo vs separados) | TODO(confirmar) (`AGENTS.md` §12) |
+| ADR | Decisión | Estado | Archivo |
+|---|---|---|---|
+| ADR-001 | Estilo arquitectónico global: monolito modular + Clean Architecture + DDD ligero | aceptado | [`0001-estilo-arquitectonico.md`](adr/0001-estilo-arquitectonico.md) |
+| ADR-002 | Tecnología de ingesta: Python vs. n8n | propuesto | [`0002-tecnologia-ingesta.md`](adr/0002-tecnologia-ingesta.md) |
+| ADR-003 | Alojamiento del backend y de la ingesta | propuesto | [`0003-alojamiento.md`](adr/0003-alojamiento.md) |
+| ADR-004 | Proveedor de tiles para producción | propuesto | [`0004-tiles-produccion.md`](adr/0004-tiles-produccion.md) |
+| ADR-005 | Modelo de datos: PostGIS sí, pgRouting no; granularidad por conexión | aceptado | [`0005-modelo-datos-postgis.md`](adr/0005-modelo-datos-postgis.md) |
+| ADR-006 | Estructura del repositorio: monorepo con migración incremental | aceptado | [`0006-estructura-repositorio.md`](adr/0006-estructura-repositorio.md) |
 
 ## 11. Lo que no se introduce (alineado con `AGENTS.md`)
 
