@@ -4,7 +4,7 @@
 
 ---
 
-## Estado actual (al 2026-11-05)
+## Estado actual (al 2026-11-06)
 
 - Proyecto en fase de **fundamentos** (orden de construcción §15): `backend/` es el esqueleto NestJS 12 (`src/main.ts` + `src/app.module.ts`, sin módulos de dominio); no hay frontend, ni base de datos conectada, ni ingesta.
 - Documentación de fundamentos creada y revisada:
@@ -14,18 +14,25 @@
   - `docs/funcionalidades-post-mvp.md` — hoja de ruta post-MVP ("MetroAlerta 2.0") desmenuzada paso a paso (PM-01…PM-25, versiones V2/V3/V4). Estado: creado. Nada de allí está implementado ni aprobado para entrar al MVP.
   - `docs/trazabilidad.md` — matriz F01–F05 → RF → HU → RNF → INV → PM y correspondencia INV ↔ PM. Estado: creado.
   - `docs/testing.md` — estrategia de pruebas por componente, estado real del CI y pendientes. Estado: creado.
-- La tabla de documentos de `AGENTS.md` §13 quedó actualizada con seis documentos creados (requerimientos, arquitectura, tareas, funcionalidades-post-mvp, trazabilidad y testing).
+  - `docs/dominio.md` — glosario, estados, entidades e invariantes; CA-04 y PC-06 resueltos. Estado: creado.
+  - `docs/fuentes-de-datos.md` — inventario de fuentes; todas `por verificar` hasta ejecutar INV-01…INV-09. Estado: creado.
+  - `docs/modelo-de-datos.md` — modelo conceptual/lógico/físico propuesto: PostGIS, segmentos por conexión y mantenimiento separado. Estado: creado.
+  - `docs/api.md` — contrato REST propuesto del MVP, administración protegida y `wa.me`. Estado: creado.
+  - `docs/despliegue.md` — estado actual, CI, entornos, Docker/CD pendiente y migración a monorepo. Estado: creado.
+  - `docs/adr/` — ADR-001, ADR-005 y ADR-006 aceptados; ADR-002, ADR-003 y ADR-004 propuestos. Estado: creado.
+- La tabla de documentos de `AGENTS.md` §13 ya no tiene pendientes; la completitud se sigue en la sección “Documentos creados con información pendiente”.
 
 ## Tareas en progreso
 
-- Ninguna en ejecución. Siguiente paso concreto: **Asignatura 1 (P0)** del plan de investigación — investigar y fichar fuentes de datos (INV-01…INV-09) para redactar `docs/fuentes-de-datos.md`, bloqueante del modelo de datos y del Route Engine.
+- Ninguna en ejecución. Siguiente paso concreto: **Asignatura 1 (P0)** — ejecutar INV-01…INV-09 y completar `docs/fuentes-de-datos.md` con evidencia real; luego validar el modelo de datos y el Route Engine.
 
 ## Backlog corto
 
-1. INV-01…INV-09 — fuentes de datos (P0 bloqueante).
+1. INV-01…INV-09 — verificar fuentes y completar `docs/fuentes-de-datos.md`.
 2. INV-10…INV-13 — validar cifras del problema y diferenciación (P0/P1).
-3. Prueba de concepto: Dijkstra + red simulada de 10–20 nodos + exclusión de segmentos (cierre de Asignatura 3).
-4. Primer módulo backend real: `alerts` (INV-20), siguiendo `docs/arquitectura.md` §4–§5.
+3. Cerrar ADR-002/003/004 (ingesta, alojamiento y tiles).
+4. Prueba de concepto: Dijkstra + red simulada de 10–20 nodos + exclusión de segmentos.
+5. Primer módulo backend real: `alerts`, siguiendo `docs/arquitectura.md` §4–§5.
 
 ## Decisiones recientes (con fecha)
 
@@ -34,23 +41,22 @@
 - 2026-11-05 — `docs/tareas-de-investigacion.md` se agregó a la tabla de documentos de `AGENTS.md` §13 y se creó este `MEMORY.md` en la raíz (aprobado por el desarrollador en sesión).
 - 2026-11-05 — Se creó `docs/funcionalidades-post-mvp.md`: la sección "MetroAlerta 2.0" de la conversación queda desmenuzada paso a paso como hoja de ruta propuesta (V2 asistencia, V3 institucional, V4 investigación). No es compromiso: ninguna funcionalidad entra al MVP sin aprobación explícita; las exclusiones de `AGENTS.md` §2 se mantienen.
 - 2026-11-05 — Se recuperaron los enlaces del chat desde el JSON del backend-api: la extracción `.md` no conservó los `href`, pero las URLs de los documentos eran correctas. Ahora se citan con la marca "verificar" por vigencia.
+- 2026-11-06 — ADR-001 (monolito modular), ADR-005 (PostGIS + granularidad por conexión) y ADR-006 (monorepo) aceptados. CA-01 (panel admin protegido), CA-02 (`wa.me` + Web Share), CA-04 (conexión) y PC-06 (mantenimiento separado) resueltos.
 
-## ADRs pendientes (TODO → formalizar)
+## ADRs
 
-1. Estilo arquitectónico global (monolito modular vs alternativas).
-2. Ingesta: Python vs n8n.
-3. Alojamiento del backend y de la ingesta.
-4. Proveedor de tiles para producción.
-5. Modelo de datos definitivo (incl. PostGIS y granularidad contingencia→segmento).
-6. Estructura del repositorio: monorepo vs separados.
-
-Detalle y opciones en `docs/arquitectura.md` §10.
+- **Aceptados:** ADR-001 (estilo arquitectónico), ADR-005 (PostGIS y granularidad) y ADR-006 (monorepo).
+- **Propuestos:** ADR-002 (ingesta), ADR-003 (alojamiento) y ADR-004 (tiles).
+- Detalle y estado en `docs/adr/README.md` y `docs/arquitectura.md` §10.
 
 ## Problemas / bloqueos abiertos
 
-- Sin fuentes de datos validadas ni muestras inspeccionadas (riesgo principal).
-- Cuestiones abiertas de `docs/requerimientos.md`: CA-01 (gestión manual de alertas), CA-02 (mecanismo de WhatsApp), CA-03/CA-05 (parámetros y umbrales por confirmar), CA-04 (granularidad contingencia→segmento).
-- `docs/dominio.md`, `docs/modelo-de-datos.md`, `docs/api.md`, `docs/despliegue.md` y `docs/adr/` siguen vacíos o sin crear.
+- Sin fuentes de datos verificadas ni muestras inspeccionadas (riesgo principal).
+- Cuestiones abiertas de `docs/requerimientos.md`: CA-03 (parámetros de estimación) y CA-05 (umbrales de rendimiento).
+- ADR-002, ADR-003 y ADR-004 siguen propuestos.
+- `docs/modelo-de-datos.md` es conceptual; faltan muestras reales y migraciones.
+- `docs/api.md` es un contrato propuesto; no hay endpoints implementados.
+- Las pruebas siguen sin suites y el CI mantiene los pasos de test comentados.
 - `backend/MEMORY.md` está vacío y duplicaría este archivo: decidir si se elimina o si se usa solo para memoria específica del backend.
 
 ## Contexto temporal
@@ -67,3 +73,4 @@ Detalle y opciones en `docs/arquitectura.md` §10.
 - 2026-11-05 — Auditoría y enriquecimiento: enlaces recuperados del JSON del chat, `docs/trazabilidad.md` creado, referencias cruzadas corregidas y `AGENTS.md` actualizado (jerarquía de fuentes, familias de IDs, comandos reales).
 - 2026-11-05 — Verificación final: IDs y tablas sin errores; los únicos enlaces "faltantes" son documentos pendientes (`dominio.md`, `api.md`, etc.); prueba de agente limpio 8/8. Se aclaró que un archivo vacío (`testing.md`) no cuenta como documento creado.
 - 2026-11-05 — Estrategia de pruebas creada en `docs/testing.md`; se documentó que `pnpm test` no encuentra suites y que el e2e esqueleto falla con 404, por lo que el CI mantiene las pruebas comentadas.
+- 2026-11-06 — Completados los documentos faltantes: dominio, fuentes, modelo de datos, API, despliegue y carpeta ADR; decisiones cerradas y tabla de completitud en `AGENTS.md` §13.
