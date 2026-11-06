@@ -7,6 +7,7 @@
 | Fuentes | `AGENTS.md` (marco) + conversación "Plan de MetroAlerta" (ChatGPT, 2026-11-03, <https://chatgpt.com/share/6aea752c-6ae0-83e9-8e29-6135665fc569>) |
 | Relación con AGENTS.md | Las funcionalidades F01–F05 (sección 2 de `AGENTS.md`) son la versión resumida del alcance. Este documento las descompone en RF verificables. Si este documento contradice `AGENTS.md`, manda `AGENTS.md`. |
 | Trazabilidad | Matriz F01–F05 → RF → HU → RNF → INV → PM en `docs/trazabilidad.md`. |
+| Documentos derivados | `docs/dominio.md` (reglas), `docs/modelo-de-datos.md` (persistencia) y `docs/api.md` (contrato HTTP). |
 
 **Convenciones:**
 - **Prioridad:** Alta = el MVP no funciona sin esto. Media = esperable, pero el MVP se puede entregar sin esto si se justifica.
@@ -163,8 +164,8 @@ La lista completa está en la sección 2 de `AGENTS.md` (es la fuente de verdad)
 
 | ID | Cuestión | Estado |
 |---|---|---|
-| CA-01 | Mecanismo de gestión manual de alertas para el MVP (panel administrativo protegido vs. herramientas directas de base de datos/datos simulados). La conversación propone panel protegido; falta decidir. | Por decidir (propone ADR) |
-| CA-02 | Mecanismo de envío para Compartir por WhatsApp (enlace universal vs. API oficial). | Por decidir |
+| CA-01 | Mecanismo de gestión manual de alertas para el MVP. | **Resuelto:** panel administrativo mínimo protegido; ver `docs/dominio.md` y `docs/api.md`. |
+| CA-02 | Mecanismo de envío para Compartir por WhatsApp. | **Resuelto:** enlace universal `wa.me` + Web Share API; sin API oficial en el MVP. |
 | CA-03 | Valores de los parámetros de estimación (velocidad de caminata, velocidad de bus, tiempo de espera, tiempo de transbordo). Requieren fuentes validadas; cualquier valor inicial se marca como **estimado**. | TODO(confirmar) |
-| CA-04 | Granularidad del mapeo contingencia → segmentos afectados (¿por estación, por tramo, por conexión?). Se define junto con el modelo de datos. | Por definir |
+| CA-04 | Granularidad del mapeo contingencia → segmentos afectados. | **Resuelto:** por conexión (arista) entre nodos consecutivos; ver ADR-005 y `docs/modelo-de-datos.md`. |
 | CA-05 | Umbrales de rendimiento (RNF-14). | TODO(confirmar) después de medir |
