@@ -50,6 +50,7 @@ Objetivo: demostrar el flujo completo (identificar contingencia → mostrar afec
 - Analítica avanzada de movilidad y modelos de optimización de tráfico.
 - Notificaciones masivas avanzadas.
 - Integraciones institucionales que requieran autorizaciones aún no obtenidas.
+- Si quieres más información sobre futuras funcionalidades, revisa `docs/funcionalidades-post-mvp.md` (sección 1: hoja de ruta; sección 7: cuestiones abiertas).
 
 La visión a largo plazo no es el alcance actual: ninguna funcionalidad futura entra al MVP automáticamente.
 
@@ -74,12 +75,12 @@ La visión a largo plazo no es el alcance actual: ninguna funcionalidad futura e
 | Mapas | Leaflet + OpenStreetMap | TODO(confirmar) |
 | Ingesta | Python o n8n (por decidir) | TODO(confirmar) |
 | Contenedores | Docker | TODO(confirmar) |
-| CI/CD | GitHub Actions | TODO(confirmar) |
+| CI/CD | GitHub Actions | CI configurado en `.github/workflows/ci.yml`; CD pendiente |
 | Despliegue frontend | Vercel | — |
 
 Que una tecnología aparezca aquí **no significa que esté configurada o implementada**. Verifícalo en el repositorio antes de usarla.
 
-Versiones verificadas en el backend: NestJS 12.0.1, TypeScript 6.0.2, pnpm 11.6.0, Vitest 4.1.2, oxlint 1.58.0, prettier 3.4.2 y Supertest 7.0.0. Las del frontend, base de datos, ingesta, Docker y CI siguen `TODO(confirmar)`.
+Versiones verificadas en el backend: NestJS 12.0.1, TypeScript 6.0.2, pnpm 11.6.0, Vitest 4.1.2, oxlint 1.58.0, prettier 3.4.2 y Supertest 7.0.0. El CI está configurado; CD sigue `TODO(confirmar)`. Las versiones del frontend, base de datos, ingesta y Docker siguen `TODO(confirmar)`.
 
 **Decisiones abiertas** (no las tomes por tu cuenta; proponlas como ADR):
 
@@ -134,7 +135,7 @@ Principios de arquitectura que sí cambian cómo trabajas:
 
 La disponibilidad y calidad de los datos es el principal riesgo técnico del proyecto.
 
-**Fuentes a investigar:** Metro de Medellín, Área Metropolitana del Valle de Aburrá, portales de datos abiertos, información geográfica del sistema, OpenStreetMap, comunicados y canales oficiales. Prioriza fuentes oficiales, abiertas y verificables.
+**Fuentes a investigar:** Metro de Medellín, Área Metropolitana del Valle de Aburrá, portales de datos abiertos, información geográfica del sistema, OpenStreetMap, comunicados y canales oficiales (X, Instagram, Facebook...). Prioriza fuentes oficiales, abiertas y verificables.
 
 **Reglas**
 
@@ -244,7 +245,23 @@ Los comandos actuales corresponden solo al backend (`backend/`), que es lo únic
 
 ## 13. Git y documentación
 
-- Commits descriptivos; ramas con responsabilidad clara; Pull Requests cuando corresponda; `.gitignore` adecuado. TODO(confirmar) estrategia de ramas y convención de commits.
+- **Commits:** siguen la convención [Conventional Commits](https://www.conventionalcommits.org/es/v1.0.0/): `tipo(alcance opcional): descripción`.
+  - Un commit por funcionalidad o cambio lógico completado; no se mezclan cambios no relacionados.
+  - La descripción es breve y empieza con un verbo en infinitivo (agregar, corregir, actualizar).
+  - Tipos principales:
+    - `feat`: nueva funcionalidad (toda funcionalidad nueva empieza con este tipo).
+    - `fix`: corrección de errores.
+    - `docs`: cambios en documentación.
+    - `refactor`: mejora interna del código sin cambiar su comportamiento.
+    - `test`: pruebas nuevas o modificadas.
+    - `chore`: mantenimiento, dependencias o configuración.
+    - `ci`: cambios en workflows o integración continua.
+  - Ejemplo: `feat(rutas): agregar cálculo de ruta alternativa ante cierre de estación`.
+- **Ramas:** una rama por tarea, con responsabilidad clara y prefijo según el tipo de cambio (`feat/`, `fix/`, `docs/`, `chore/`). Ejemplo: `feat/alertas-metro`. No se trabaja directamente sobre `main`.
+- **Pull Requests:** todo cambio entra a `main` mediante PR. El workflow (CI) debe pasar antes de hacer el merge.
+- **Limpieza de ramas:** después del merge, la rama del PR se elimina para mantener el repositorio ordenado.
+- **`.gitignore`:** adecuado al stack del proyecto. Nunca se versionan archivos `.env`, credenciales, `node_modules/` ni artefactos de build.
+
 - Documenta las decisiones técnicas importantes como ADR. Si una decisión cambia, actualiza los documentos afectados.
 - Idioma: la documentación y la comunicación con el desarrollador son en español. TODO(confirmar) idioma de los identificadores en el código.
 
@@ -266,6 +283,21 @@ Este archivo da el contexto y las reglas esenciales; el detalle vive en `/docs`.
 | `docs/tareas-de-investigacion.md` | Plan de estudio e investigación priorizado (tareas INV-01…INV-35, prioridades P0–P3) | Empezar trabajo de investigación o retomar el plan | creado |
 | `docs/funcionalidades-post-mvp.md` | Hoja de ruta post-MVP ("MetroAlerta 2.0") desmenuzada paso a paso (PM-01…PM-25, versiones V2/V3/V4) | Diseñar o proponer funcionalidades futuras | creado |
 | `docs/trazabilidad.md` | Matriz de trazabilidad F01–F05 → RF → HU → RNF → INV → PM y correspondencia INV ↔ PM | Revisar cobertura o cambiar un ID | creado |
+
+**Documentos creados con información pendiente**
+
+`creado` significa que el archivo existe, no que esté completo. Los documentos con datos o decisiones abiertas se listan aquí y no se presentan como terminados.
+
+| Documento | Qué falta | Se completa cuando |
+|---|---|---|
+| `docs/requerimientos.md` | CA-01…CA-05 | Se cierren las decisiones y se validen los parámetros |
+| `docs/arquitectura.md` | ADR-001…ADR-006 y módulos sin implementar | Se acepten los ADR y exista código |
+| `docs/tareas-de-investigacion.md` | INV-01…INV-35 sin ejecutar | Se completen las asignaturas |
+| `docs/funcionalidades-post-mvp.md` | PC-01…PC-06 | Se apruebe el alcance post-MVP |
+| `docs/trazabilidad.md` | Huecos de cobertura | Se creen los documentos y se implementen los RF |
+| `docs/testing.md` | Sin suites; CI sin pruebas | Se implementen las pruebas y se habilite CI |
+
+Al crear un documento nuevo, agrégalo aquí si le falta información. Cuando se cierre su última fila, retíralo de esta tabla.
 
 **Familias de identificadores y formato de referencias:**
 
@@ -322,7 +354,7 @@ Este archivo define las reglas permanentes; `MEMORY.md` guarda lo temporal. AGEN
 
 **Código:** nombres descriptivos, funciones pequeñas con una sola responsabilidad, sin valores mágicos (usa constantes o configuración), comentarios solo donde aclaren algo complejo. TypeScript con tipado estricto.
 
-**Con el desarrollador:** actúa como colaborador técnico, no solo como generador de código. Explica los conceptos cuando haga falta, advierte sobre riesgos y, si una propuesta suya tiene problemas técnicos, dilos y ofrece alternativas. Ninguna decisión inicial es definitiva.
+**Con el desarrollador:** actúa como colaborador técnico, no solo como generador de código. Explica los conceptos cada vez que realices algo, advierte sobre riesgos y, si una propuesta suya tiene problemas técnicos, dilos y ofrece alternativas. Ninguna decisión inicial es definitiva.
 
 ## 15. Orden de construcción
 
