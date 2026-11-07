@@ -60,9 +60,9 @@
 - ADR-002, ADR-003 y ADR-004 siguen propuestos.
 - `docs/modelo-de-datos.md` es conceptual; faltan muestras reales y migraciones.
 - `docs/api.md` es un contrato propuesto; no hay endpoints implementados.
-- Frontend sin cliente API, mapa, PWA ni runner de pruebas; `pnpm lint` disponible.
+- Frontend sin cliente API, mapa, PWA ni runner de pruebas; `pnpm lint`, `pnpm format:check` y `pnpm build` disponibles y validados.
 - Docker: archivos placeholder; no implementado.
-- Las pruebas siguen sin suites y el CI mantiene los pasos de test comentados.
+- Las pruebas siguen sin suites y el CI mantiene los pasos de test comentados; el CI sí valida lint, formato, auditoría y build del frontend.
 
 ## Contexto temporal
 
@@ -80,3 +80,4 @@
 - 2026-11-05 — Estrategia de pruebas creada en `docs/testing.md`; se documentó que `pnpm test` no encuentra suites y que el e2e esqueleto falla con 404, por lo que el CI mantiene las pruebas comentadas.
 - 2026-11-06 — Completados los documentos faltantes: dominio, fuentes, modelo de datos, API, despliegue y carpeta ADR; decisiones cerradas y tabla de completitud en `AGENTS.md` §13.
 - 2026-11-06 — Creados `frontend/AGENTS.md` y `frontend/MEMORY.md`; documentados Next.js 16.4.5, la estructura frontend y Docker como placeholder no implementado.
+- 2026-11-06 — Frontend con Prettier y CI separado; `pnpm audit` corregido con override de `minimatch >=11.0.1`.

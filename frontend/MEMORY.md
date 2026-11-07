@@ -45,6 +45,7 @@
 - Sin acceso directo a Supabase.
 - Textos de interfaz en español; código e identificadores en inglés.
 - Leer la documentación local de Next.js antes de escribir código.
+- Prettier + `eslint-config-prettier`; scripts `format`/`format:check`; override `minimatch >=11.0.1` para auditoría.
 - Monorepo `apps/web` como destino, sin mover archivos todavía.
 
 ## Estado por pantalla / componente
@@ -69,6 +70,7 @@ cd frontend && pnpm dev
 cd frontend && pnpm build
 cd frontend && pnpm start
 cd frontend && pnpm lint
+cd frontend && pnpm format:check
 ```
 
 No existe `pnpm test`; no ejecutarlo ni inventarlo.
@@ -87,6 +89,7 @@ No existe `pnpm test`; no ejecutarlo ni inventarlo.
 
 - 2026-11-06 — Creados `frontend/AGENTS.md` y `frontend/MEMORY.md`.
 - 2026-11-06 — Documentado el scaffold de Next.js 16.4.5 y sus placeholders.
+- 2026-11-06 — Agregados Prettier, `eslint-config-prettier`, scripts de formato y CI de frontend; `minimatch` actualizado para auditoría.
 
 ## Próximo paso
 

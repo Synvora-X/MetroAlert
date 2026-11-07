@@ -126,7 +126,7 @@ No se agregan dependencias de prueba sin justificarlo y aprobarlo (`AGENTS.md` �
 - Propuesta: habilitar `pnpm test` cuando exista la primera prueba de dominio; luego `test:cov`; e2e cuando existan endpoints.
 - No habilitar el esqueleto actual: falla con 404 y no representa el MVP.
 - Cualquier cambio al workflow requiere aprobación (`AGENTS.md` §9).
-- El CI no valida el frontend todavía; `pnpm lint` y `pnpm build` del frontend se ejecutan manualmente.
+- El CI valida el frontend con `lint`, `format:check`, `audit`, `build` y `tsc --noEmit`.
 
 ## 8. Cobertura y criterios de terminado
 

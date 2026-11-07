@@ -75,7 +75,7 @@ La visión a largo plazo no es el alcance actual: ninguna funcionalidad futura e
 | Mapas | Leaflet + OpenStreetMap | TODO(confirmar) |
 | Ingesta | Python o n8n (por decidir) | TODO(confirmar) |
 | Contenedores | Docker | Placeholder en `backend/Dockerfile`, `frontend/Dockerfile` y `docker-compose.yml`; no implementado |
-| CI/CD | GitHub Actions | CI configurado en `.github/workflows/ci.yml`; CD pendiente |
+| CI/CD | GitHub Actions | CI valida backend y frontend en `.github/workflows/ci.yml`; CD pendiente |
 | Despliegue frontend | Vercel | — |
 
 Que una tecnología aparezca aquí **no significa que esté configurada o implementada**. Verifícalo en el repositorio antes de usarla.
@@ -244,6 +244,7 @@ Los comandos actuales corresponden al backend (`backend/`) y al frontend (`front
 | Frontend: build | `cd frontend && pnpm build` |
 | Frontend: producción local | `cd frontend && pnpm start` |
 | Frontend: lint | `cd frontend && pnpm lint` |
+| Frontend: formato | `cd frontend && pnpm format` · `cd frontend && pnpm format:check` |
 | Frontend: pruebas | TODO(confirmar) — no hay runner. |
 | Migraciones | TODO(confirmar) — no hay base de datos conectada. |
 | Docker | TODO(confirmar) — archivos placeholder; no implementado. |

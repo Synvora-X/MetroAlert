@@ -21,7 +21,7 @@
 - El frontend no tiene API client, Leaflet, PWA ni pruebas; solo el scaffold de `create-next-app`.
 - Hay `backend/Dockerfile`, `frontend/Dockerfile` y `docker-compose.yml` vacíos: son placeholders, no una implementación funcional.
 - No hay CD ni despliegue de backend; Vercel está previsto para el frontend.
-- El CI está configurado en `.github/workflows/ci.yml` y corre en `push` a `main` y en PR hacia `main`; hoy solo valida backend.
+- El CI está configurado en `.github/workflows/ci.yml` y corre en `push` a `main` y en PR hacia `main`; valida backend y frontend.
 - La base de datos Supabase/PostgreSQL no está conectada.
 - El repositorio es un monorepo **en transición**: el destino es `apps/api` + `apps/web` + `packages/contracts`; `backend/` y `frontend/` se mantienen hasta el PR de migración (ADR-006).
 
@@ -69,6 +69,7 @@ cd frontend && pnpm dev
 cd frontend && pnpm build
 cd frontend && pnpm start
 cd frontend && pnpm lint
+cd frontend && pnpm format:check
 ```
 
 El backend escucha en `PORT` o 5000 por defecto; el frontend usa el puerto 3000. `pnpm test` no encuentra suites todavía y `pnpm test:e2e` falla con 404 porque el e2e es el esqueleto de NestJS; está documentado en `docs/testing.md`. El frontend no tiene runner de pruebas.
@@ -104,7 +105,7 @@ Workflow `.github/workflows/ci.yml`:
 7. `pnpm audit`
 8. `pnpm build`
 
-Los pasos de pruebas están comentados hasta que existan suites. El CI no despliega y hoy no valida el frontend; `pnpm lint` y `pnpm build` del frontend se ejecutan manualmente.
+Los pasos de pruebas están comentados hasta que existan suites. El CI no despliega y tiene dos jobs: `build-backend` y `build-frontend`. El job de frontend ejecuta instalación, `lint`, `audit`, `build`, `format:check` y `tsc --noEmit`.
 
 Reglas del repositorio (`AGENTS.md` §13): un cambio entra por PR a `main`; el workflow debe pasar antes del merge; no se trabaja directamente sobre `main`.
 
@@ -144,7 +145,7 @@ Pasos previstos:
 2. Levantar backend: `cd backend && pnpm start:dev`; frontend: `cd frontend && pnpm dev`.
 3. Verificar salud: `GET /health` (cuando exista).
 4. Probar backend: `pnpm test`, `pnpm test:e2e`; frontend: sin runner todavía.
-5. Calidad: `pnpm lint`, `pnpm format:check`, `pnpm audit`, `pnpm build`; frontend: `pnpm lint` y `pnpm build`.
+5. Calidad: `pnpm lint`, `pnpm format:check`, `pnpm audit`, `pnpm build`; frontend: `pnpm lint`, `pnpm format:check`, `pnpm audit`, `pnpm build` y `pnpm exec tsc --noEmit`.
 6. Ante un fallo de despliegue: volver al artefacto anterior y revisar logs; no borrar datos.
 
 ## 10. Decisiones abiertas
