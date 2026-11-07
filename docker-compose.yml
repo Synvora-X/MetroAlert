@@ -1,2 +1,25 @@
-# Placeholder: Docker Compose is not implemented yet.
-# When implemented: define api, web and db (PostGIS) services.
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    container_name: metroalert-backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: production
+    container_name: metroalert-frontend
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
