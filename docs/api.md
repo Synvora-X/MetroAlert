@@ -278,7 +278,7 @@ El backend construye el mensaje y devuelve el enlace; **no envía** por API ofic
 - **`transport`:** red y nodos cercanos.
 - **`route-engine`:** cálculo de alternativas.
 - **`sharing`:** mensaje y enlace.
-- **Frontend:** cliente tipado; `packages/contracts` si se confirma el monorepo.
+- **Frontend:** consume el contrato mediante `lib/api`; no consulta Supabase ni calcula rutas. Los tipos compartidos irán en `packages/contracts` cuando se migre al monorepo.
 - **Pruebas:** Supertest para contratos y errores; fixtures simulados.
 
 ## 10. Cuándo actualizar este documento

@@ -60,7 +60,7 @@ Reglas del diagrama:
 
 ## 3. Estructura del repositorio
 
-Situación real del repositorio (2026-11-06): `backend/` existe (NestJS + Vitest + oxlint + pnpm, esqueleto); el frontend aún no existe. ADR-006 acepta un monorepo con destino `apps/api`, `apps/web` y `packages/contracts`; la migración es incremental y `backend/` se mantiene hasta el PR dedicado.
+Situación real del repositorio (2026-11-06): `backend/` existe (NestJS + Vitest + oxlint + pnpm, esqueleto) y `frontend/` existe (Next.js 16.4.5 + React 19.3 + Tailwind 4.3.4, scaffold). ADR-006 acepta un monorepo con destino `apps/api`, `apps/web` y `packages/contracts`; la migración es incremental y ambos directorios se mantienen hasta el PR dedicado.
 
 Estructura interna propuesta para el backend (se incorpora módulo por módulo según se necesite; no crear 40 carpetas vacías):
 
@@ -88,6 +88,27 @@ backend/src/
 
 ADR-006 define un monorepo con destino `apps/api`, `apps/web` y `packages/contracts`; los contratos compartidos entre frontend y backend (tipos de respuesta, DTOs de la API) irían en `packages/contracts`. Regla: solo comparten **interfaces de comunicación**; nunca entidades de dominio ni implementaciones internas. El detalle de los contratos va en `docs/api.md` y el del modelo de datos en `docs/modelo-de-datos.md`.
 
+### 3.1 Frontend
+
+`frontend/` es el scaffold de Next.js 16.4.5 con React 19.3.0 y Tailwind CSS 4.3.4. Estructura propuesta:
+
+```text
+frontend/
+├── app/            # rutas, layouts, loading, error, not-found
+├── components/     # UI reutilizable (mapa, rutas, estados)
+├── lib/            # cliente API, formato, configuración
+└── public/         # assets estáticos
+```
+
+Reglas de arquitectura:
+
+- App Router con Server Components por defecto.
+- `'use client'` solo para estado, eventos, APIs del navegador, Leaflet, geolocalización o Web Share.
+- El frontend consume `docs/api.md`; no calcula rutas ni accede directamente a Supabase.
+- Leaflet se carga solo en cliente y se aísla en `components/map/`.
+- PWA (manifest, service worker y offline) se implementa después del shell.
+- Docker sigue siendo un placeholder; no hay imagen ni compose funcional.
+
 ## 4. Módulos del backend
 
 | Módulo | Responsable de | No debe | Casos de uso iniciales |
@@ -99,7 +120,7 @@ ADR-006 define un monorepo con destino `apps/api`, `apps/web` y `packages/contra
 | `sharing` | Armar el mensaje compartible (origen, destino, medios, estaciones/paraderos, tiempo estimado marcado como aproximado, contingencia relacionada). | Enviar el mensaje por su cuenta o llamar a la API oficial de WhatsApp: el envío ocurre en el dispositivo del usuario (CA-02 resuelto: `wa.me` + Web Share; ver `docs/api.md`). | `BuildShareMessage` |
 | `shared` (carpeta, no módulo) | Filtros de excepción, utilidades, tipos comunes. | Contener reglas de negocio. | — |
 
-Nota de idioma: los nombres de módulos/casos de uso se escriben en inglés por congruencia con la conversación; el idioma de identificadores en el código es TODO(confirmar) en `AGENTS.md` §13.
+Nota de idioma: los identificadores, módulos y casos de uso se escriben en inglés; la documentación y los mensajes de usuario, en español.
 
 ## 5. Capas (Clean Architecture) y reglas de dependencia
 

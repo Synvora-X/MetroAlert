@@ -17,13 +17,13 @@
 
 ## 1. Estado actual
 
-- Existe solo `backend/` (NestJS 12, TypeScript, pnpm, Vitest, oxlint y Prettier).
-- El frontend Next.js todavía no existe.
-- No hay Dockerfile ni `docker-compose`.
-- No hay CD ni despliegue de backend.
-- El CI está configurado en `.github/workflows/ci.yml` y corre en `push` a `main` y en PR hacia `main`.
+- Existen `backend/` (NestJS 12, TypeScript, pnpm, Vitest, oxlint y Prettier) y `frontend/` (Next.js 16.4.5, React 19.3, Tailwind 4.3.4, scaffold).
+- El frontend no tiene API client, Leaflet, PWA ni pruebas; solo el scaffold de `create-next-app`.
+- Hay `backend/Dockerfile`, `frontend/Dockerfile` y `docker-compose.yml` vacíos: son placeholders, no una implementación funcional.
+- No hay CD ni despliegue de backend; Vercel está previsto para el frontend.
+- El CI está configurado en `.github/workflows/ci.yml` y corre en `push` a `main` y en PR hacia `main`; hoy solo valida backend.
 - La base de datos Supabase/PostgreSQL no está conectada.
-- El repositorio es un monorepo **en transición**: el destino es `apps/api` + `apps/web` + `packages/contracts`; `backend/` se mantiene hasta el PR de migración (ADR-006).
+- El repositorio es un monorepo **en transición**: el destino es `apps/api` + `apps/web` + `packages/contracts`; `backend/` y `frontend/` se mantienen hasta el PR de migración (ADR-006).
 
 ## 2. Entornos
 
@@ -44,7 +44,8 @@ Reglas:
 - El repositorio solo lleva `.env.example` sin valores.
 - Variables del backend (propuestas): `PORT`, `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_TOKEN` o credenciales de administrador.
 - La `service_role` de Supabase es **solo backend**; nunca se expone en el frontend.
-- Variables del frontend (propuestas): URL pública de la API y credenciales de lectura estrictamente necesarias.
+- Variables del frontend (propuestas): URL pública de la API (`NEXT_PUBLIC_API_URL`) y solo variables públicas; nunca secretos.
+- `frontend/.gitignore` ignora `.env*`; si se crea `frontend/.env.example`, agregar `!.env.example` para versionarlo.
 - Secretos de Vercel y del hosting se configuran en sus paneles, no en Git.
 - `.env`, `.env.*.local`, credenciales y artefactos de build están fuera del repositorio.
 
@@ -62,18 +63,33 @@ cd backend && pnpm lint
 cd backend && pnpm format
 cd backend && pnpm format:check
 cd backend && pnpm build
+
+cd frontend && pnpm install
+cd frontend && pnpm dev
+cd frontend && pnpm build
+cd frontend && pnpm start
+cd frontend && pnpm lint
 ```
 
-El backend escucha en `PORT` o 5000 por defecto. `pnpm test` no encuentra suites todavía y `pnpm test:e2e` falla con 404 porque el e2e es el esqueleto de NestJS; está documentado en `docs/testing.md`.
+El backend escucha en `PORT` o 5000 por defecto; el frontend usa el puerto 3000. `pnpm test` no encuentra suites todavía y `pnpm test:e2e` falla con 404 porque el e2e es el esqueleto de NestJS; está documentado en `docs/testing.md`. El frontend no tiene runner de pruebas.
 
-## 5. Docker y Compose (propuesta)
+## 5. Docker y Compose (placeholder)
 
-Todavía no existe. Propuesta mínima:
+Existen tres archivos vacíos:
 
-- `backend/Dockerfile` multi-stage con pnpm y Node 22.
-- `docker-compose.yml` para desarrollo: API y, cuando exista, PostgreSQL con PostGIS.
-- Sin secretos en la imagen; variables por entorno.
-- No se agrega Docker hasta que el MVP local y el CI estén estables.
+- `backend/Dockerfile`
+- `frontend/Dockerfile`
+- `docker-compose.yml`
+
+Son **placeholders**: no hay imagen, servicios ni variables configuradas. No ejecutes `docker compose` esperando que levante la aplicación.
+
+Propuesta mínima para cuando se implemente:
+
+- `backend/Dockerfile` multi-stage con pnpm y Node 22, usuario no root.
+- `frontend/Dockerfile` multi-stage para Next.js.
+- `docker-compose.yml` con `api`, `web` y, cuando exista, PostgreSQL con PostGIS.
+- Sin secretos en las imágenes; variables por entorno.
+- No se implementa Docker hasta que el MVP local y el CI estén estables.
 
 ## 6. CI actual
 
@@ -88,13 +104,13 @@ Workflow `.github/workflows/ci.yml`:
 7. `pnpm audit`
 8. `pnpm build`
 
-Los pasos de pruebas están comentados hasta que existan suites. El CI no despliega.
+Los pasos de pruebas están comentados hasta que existan suites. El CI no despliega y hoy no valida el frontend; `pnpm lint` y `pnpm build` del frontend se ejecutan manualmente.
 
 Reglas del repositorio (`AGENTS.md` §13): un cambio entra por PR a `main`; el workflow debe pasar antes del merge; no se trabaja directamente sobre `main`.
 
 ## 7. CD y despliegue (propuesta)
 
-- **Frontend:** Vercel, cuando exista `apps/web`.
+- **Frontend:** Vercel, cuando se decida desplegar; hoy existe `frontend/` y el destino es `apps/web`.
 - **Backend e ingesta:** pendiente de ADR-003. Opciones por evaluar: Railway (citado en la conversación), otro proveedor gestionado o autoalojamiento.
 - **Base de datos:** Supabase/PostgreSQL con PostGIS; migraciones versionadas.
 - **Migraciones:** se ejecutan en un paso controlado, nunca automáticamente desde el frontend.
@@ -117,18 +133,18 @@ docs/
 Pasos previstos:
 
 1. Crear `apps/api` y mover el backend.
-2. Crear `apps/web` cuando exista frontend.
+2. Crear `apps/web` y mover el frontend.
 3. Crear `packages/contracts` solo cuando haya tipos compartidos reales.
 4. Actualizar `ci.yml`, `package.json` y rutas en el mismo PR de migración.
 5. No mover código durante la fase de documentación.
 
 ## 9. Runbook mínimo
 
-1. Instalar dependencias: `cd backend && pnpm install`.
-2. Levantar: `cd backend && pnpm start:dev`.
+1. Instalar dependencias: `cd backend && pnpm install` y `cd frontend && pnpm install`.
+2. Levantar backend: `cd backend && pnpm start:dev`; frontend: `cd frontend && pnpm dev`.
 3. Verificar salud: `GET /health` (cuando exista).
-4. Probar: `pnpm test`, `pnpm test:e2e`.
-5. Calidad: `pnpm lint`, `pnpm format:check`, `pnpm audit`, `pnpm build`.
+4. Probar backend: `pnpm test`, `pnpm test:e2e`; frontend: sin runner todavía.
+5. Calidad: `pnpm lint`, `pnpm format:check`, `pnpm audit`, `pnpm build`; frontend: `pnpm lint` y `pnpm build`.
 6. Ante un fallo de despliegue: volver al artefacto anterior y revisar logs; no borrar datos.
 
 ## 10. Decisiones abiertas
@@ -137,6 +153,8 @@ Pasos previstos:
 - ADR-003: alojamiento del backend y la ingesta.
 - ADR-004: proveedor de tiles para producción.
 - Versiones de Docker y Node para producción.
+- Dockerfile y compose: placeholders vacíos; definir imágenes y servicios.
+- Runner de pruebas del frontend (Vitest/Testing Library/Playwright).
 - Estrategia de migraciones y respaldos.
 - Dominio y certificados.
 - Límites de CI/CD gratuitos y secretos.

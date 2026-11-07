@@ -20,7 +20,8 @@
 - `pnpm test` no encuentra archivos `.spec.ts` y falla con "No test files found".
 - `pnpm test:e2e` ejecuta `test/app.e2e-spec.ts`, el esqueleto de NestJS: espera `GET /` 200 y recibe 404 porque `AppModule` no tiene controladores.
 - El CI (`.github/workflows/ci.yml`) ejecuta instalación, `lint`, `format:check`, `audit` y `build`; los pasos de pruebas están comentados.
-- No hay frontend ni base de datos conectada.
+- No hay base de datos conectada.
+- El frontend existe como scaffold de Next.js 16.4.5, React 19.3 y Tailwind 4.3.4; no tiene runner ni suites. `pnpm lint` está disponible.
 
 ## 2. Principios
 
@@ -38,7 +39,7 @@
 | Unitarias | Vitest | dominio, route-engine, validaciones, sharing | desde la primera regla de negocio |
 | Integración | Vitest + Supertest / Supabase local | repositorios, adaptadores, API | cuando exista base de datos o adaptador |
 | E2E | Vitest + Supertest | flujo HTTP crítico | cuando existan endpoints reales |
-| Frontend | Vitest + Testing Library / Playwright | componentes, accesibilidad, flujo PWA | cuando exista frontend |
+| Frontend | Vitest + Testing Library / Playwright (por decidir) | componentes, accesibilidad, flujo PWA | el scaffold existe; runner no configurado |
 | Carga | Herramienta por decidir | contingencia + consultas concurrentes | cuando el flujo esté estable |
 
 No se agregan dependencias de prueba sin justificarlo y aprobarlo (`AGENTS.md` §9).
@@ -97,11 +98,13 @@ No se agregan dependencias de prueba sin justificarlo y aprobarlo (`AGENTS.md` �
 - Duplicados, cambios de estado y errores de estructura.
 - Sin scraping de X como dependencia del MVP.
 
-### 4.9 Frontend y PWA (cuando exista)
+### 4.9 Frontend y PWA
 
+- El scaffold existe (Next.js 16.4.5); no hay runner de pruebas configurado.
 - Estados de carga, error y vacío; etiquetas confirmado/estimado/no disponible.
 - Accesibilidad y contraste; offline con fecha de actualización visible.
 - Compartir y navegación principal.
+- Cuando se agregue runner, probar la frontera cliente del mapa y el flujo de compartir.
 
 ## 5. Datos y fixtures
 
@@ -123,6 +126,7 @@ No se agregan dependencias de prueba sin justificarlo y aprobarlo (`AGENTS.md` �
 - Propuesta: habilitar `pnpm test` cuando exista la primera prueba de dominio; luego `test:cov`; e2e cuando existan endpoints.
 - No habilitar el esqueleto actual: falla con 404 y no representa el MVP.
 - Cualquier cambio al workflow requiere aprobación (`AGENTS.md` §9).
+- El CI no valida el frontend todavía; `pnpm lint` y `pnpm build` del frontend se ejecutan manualmente.
 
 ## 8. Cobertura y criterios de terminado
 
