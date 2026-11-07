@@ -17,7 +17,7 @@ jobs: ## Trabajos / Acciones que realizara el workflow
       - uses: actions/checkout@v6 ## clonar el repositorio en la maquina virtual
       - uses: pnpm/action-setup@v4 ## instalar pnpm en la máquina virtual
         with:
-         package_json_file: backend/package.json
+          package_json_file: backend/package.json
 
       - uses: actions/setup-node@v7 ## instalar node en la máquina virtual
         with:
