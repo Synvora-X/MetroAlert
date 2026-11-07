@@ -243,6 +243,8 @@ Los comandos actuales corresponden solo al backend (`backend/`), que es lo únic
 
 **Estructura:** existe solo `backend/` (NestJS 12: `src/main.ts`, `src/app.module.ts`, `test/`); el frontend todavía no existe. ADR-006 acepta un monorepo con destino `apps/api`, `apps/web` y `packages/contracts`; la migración es incremental y `backend/` se mantiene hasta el PR dedicado. El backend escucha en `PORT` o 5000 por defecto.
 
+Las reglas locales del backend viven en `backend/AGENTS.md`; su estado de implementación, en `backend/MEMORY.md`.
+
 ## 13. Git y documentación
 
 - **Commits:** siguen la convención [Conventional Commits](https://www.conventionalcommits.org/es/v1.0.0/): `tipo(alcance opcional): descripción`.
