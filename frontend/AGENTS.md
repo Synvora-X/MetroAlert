@@ -53,6 +53,7 @@ Desde la raíz del repositorio:
 | Build | `cd frontend && pnpm build` |
 | Producción local | `cd frontend && pnpm start` |
 | Lint | `cd frontend && pnpm lint` |
+| Formato | `cd frontend && pnpm format` / `pnpm format:check` |
 | Tests | No existe `pnpm test`; no lo inventes. |
 
 ## 4. Regla de versión de Next.js
@@ -165,7 +166,7 @@ Una tarea del frontend está terminada cuando:
 3. Es responsive y accesible.
 4. Tiene estados de carga, error y vacío.
 5. Respeta el contrato de `../docs/api.md`.
-6. `pnpm lint` y `pnpm build` pasan.
+6. `pnpm lint`, `pnpm format:check` y `pnpm build` pasan.
 7. Tiene pruebas cuando exista runner.
 8. Actualiza `frontend/MEMORY.md`.
 
