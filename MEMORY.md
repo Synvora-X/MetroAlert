@@ -6,10 +6,10 @@
 
 ## Estado actual (al 2026-11-06)
 
-- Proyecto en fase de **fundamentos** (orden de construcción §15): `backend/` es el esqueleto NestJS 12 (`src/main.ts` + `src/app.module.ts`, sin módulos de dominio); no hay frontend, ni base de datos conectada, ni ingesta.
+- Proyecto en fase de **fundamentos** (orden de construcción §15): `backend/` es el esqueleto NestJS 12 (`src/main.ts` + `src/app.module.ts`, sin módulos de dominio); `frontend/` existe con Next.js 16.4.5 (scaffold), sin API, mapa, PWA ni pruebas; no hay base de datos conectada ni ingesta.
 - Documentación de fundamentos creada y revisada:
   - `docs/requerimientos.md` — RF-01…RF-16, HU-01…HU-06 (GWT), RNF-01…RNF-14, post-MVP y cuestiones abiertas CA-01…CA-05. Estado: creado.
-  - `docs/arquitectura.md` — propuesta de referencia (monolito modular + Clean Architecture; módulos `alerts`, `transport`, `route-engine`, `geolocation`, `sharing`) y decisiones por ratificar en ADRs. Estado: creado.
+  - `docs/arquitectura.md` — propuesta de referencia (monolito modular + Clean Architecture; módulos `alerts`, `transport`, `route-engine`, `geolocation`, `sharing`) y decisiones registradas en `docs/adr/`. Estado: creado.
   - `docs/tareas-de-investigacion.md` — plan de estudio con 35 tareas (INV-01…INV-35) en 6 asignaturas, prioridades P0–P3. Estado: creado.
   - `docs/funcionalidades-post-mvp.md` — hoja de ruta post-MVP ("MetroAlerta 2.0") desmenuzada paso a paso (PM-01…PM-25, versiones V2/V3/V4). Estado: creado. Nada de allí está implementado ni aprobado para entrar al MVP.
   - `docs/trazabilidad.md` — matriz F01–F05 → RF → HU → RNF → INV → PM y correspondencia INV ↔ PM. Estado: creado.
@@ -21,6 +21,7 @@
   - `docs/despliegue.md` — estado actual, CI, entornos, Docker/CD pendiente y migración a monorepo. Estado: creado.
   - `docs/adr/` — ADR-001, ADR-005 y ADR-006 aceptados; ADR-002, ADR-003 y ADR-004 propuestos. Estado: creado.
 - La tabla de documentos de `AGENTS.md` §13 ya no tiene pendientes; la completitud se sigue en la sección “Documentos creados con información pendiente”.
+- Reglas locales: `backend/AGENTS.md` y `backend/MEMORY.md`; `frontend/AGENTS.md` y `frontend/MEMORY.md`. No reemplazan este archivo ni `AGENTS.md`.
 
 ## Tareas en progreso
 
@@ -33,6 +34,7 @@
 3. Cerrar ADR-002/003/004 (ingesta, alojamiento y tiles).
 4. Prueba de concepto: Dijkstra + red simulada de 10–20 nodos + exclusión de segmentos.
 5. Primer módulo backend real: `alerts`, siguiendo `docs/arquitectura.md` §4–§5.
+6. Frontend: shell, metadata en español, cliente API, contingencias, mapa y PWA.
 
 ## Decisiones recientes (con fecha)
 
@@ -42,6 +44,8 @@
 - 2026-11-05 — Se creó `docs/funcionalidades-post-mvp.md`: la sección "MetroAlerta 2.0" de la conversación queda desmenuzada paso a paso como hoja de ruta propuesta (V2 asistencia, V3 institucional, V4 investigación). No es compromiso: ninguna funcionalidad entra al MVP sin aprobación explícita; las exclusiones de `AGENTS.md` §2 se mantienen.
 - 2026-11-05 — Se recuperaron los enlaces del chat desde el JSON del backend-api: la extracción `.md` no conservó los `href`, pero las URLs de los documentos eran correctas. Ahora se citan con la marca "verificar" por vigencia.
 - 2026-11-06 — ADR-001 (monolito modular), ADR-005 (PostGIS + granularidad por conexión) y ADR-006 (monorepo) aceptados. CA-01 (panel admin protegido), CA-02 (`wa.me` + Web Share), CA-04 (conexión) y PC-06 (mantenimiento separado) resueltos.
+- 2026-11-06 — Frontend confirmado con Next.js 16.4.5, React 19.3.0 y Tailwind 4.3.4; App Router, Server Components por defecto y documentación local de Next.js como fuente.
+- 2026-11-06 — Docker queda como placeholder (Dockerfiles y compose vacíos/documentados), no implementado.
 
 ## ADRs
 
@@ -56,8 +60,9 @@
 - ADR-002, ADR-003 y ADR-004 siguen propuestos.
 - `docs/modelo-de-datos.md` es conceptual; faltan muestras reales y migraciones.
 - `docs/api.md` es un contrato propuesto; no hay endpoints implementados.
+- Frontend sin cliente API, mapa, PWA ni runner de pruebas; `pnpm lint` disponible.
+- Docker: archivos placeholder; no implementado.
 - Las pruebas siguen sin suites y el CI mantiene los pasos de test comentados.
-- `backend/MEMORY.md` está vacío y duplicaría este archivo: decidir si se elimina o si se usa solo para memoria específica del backend.
 
 ## Contexto temporal
 
@@ -74,3 +79,4 @@
 - 2026-11-05 — Verificación final: IDs y tablas sin errores; los únicos enlaces "faltantes" son documentos pendientes (`dominio.md`, `api.md`, etc.); prueba de agente limpio 8/8. Se aclaró que un archivo vacío (`testing.md`) no cuenta como documento creado.
 - 2026-11-05 — Estrategia de pruebas creada en `docs/testing.md`; se documentó que `pnpm test` no encuentra suites y que el e2e esqueleto falla con 404, por lo que el CI mantiene las pruebas comentadas.
 - 2026-11-06 — Completados los documentos faltantes: dominio, fuentes, modelo de datos, API, despliegue y carpeta ADR; decisiones cerradas y tabla de completitud en `AGENTS.md` §13.
+- 2026-11-06 — Creados `frontend/AGENTS.md` y `frontend/MEMORY.md`; documentados Next.js 16.4.5, la estructura frontend y Docker como placeholder no implementado.
