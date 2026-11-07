@@ -74,23 +74,94 @@ cd frontend && pnpm format:check
 
 El backend escucha en `PORT` o 5000 por defecto; el frontend usa el puerto 3000. `pnpm test` no encuentra suites todavía y `pnpm test:e2e` falla con 404 porque el e2e es el esqueleto de NestJS; está documentado en `docs/testing.md`. El frontend no tiene runner de pruebas.
 
-## 5. Docker y Compose (placeholder)
+## 5. Docker y Compose
 
-Existen tres archivos vacíos:
+### 5.1. Estructura
 
-- `backend/Dockerfile`
-- `frontend/Dockerfile`
-- `docker-compose.yml`
+```text
+backend/
+  Dockerfile
+  .dockerignore
+frontend/
+  Dockerfile
+  .dockerignore
+docker-compose.dev.yml
+docker-compose.yml
+```
 
-Son **placeholders**: no hay imagen, servicios ni variables configuradas. No ejecutes `docker compose` esperando que levante la aplicación.
+Los Dockerfiles usan una imagen base `node:22-bookworm-slim` y activan pnpm 11.6.0 mediante Corepack. Ambos tienen tres etapas:
 
-Propuesta mínima para cuando se implemente:
+| Etapa | Propósito |
+|---|---|
+| `development` | Instala dependencias y ejecuta el servidor de desarrollo. |
+| `build` | Instala dependencias y genera el build de la aplicación. |
+| `production` | Instala dependencias de producción y copia los artefactos generados en la etapa `build`. |
 
-- `backend/Dockerfile` multi-stage con pnpm y Node 22, usuario no root.
-- `frontend/Dockerfile` multi-stage para Next.js.
-- `docker-compose.yml` con `api`, `web` y, cuando exista, PostgreSQL con PostGIS.
-- Sin secretos en las imágenes; variables por entorno.
-- No se implementa Docker hasta que el MVP local y el CI estén estables.
+Detalles por componente:
+
+- **Backend:** la etapa de desarrollo ejecuta `pnpm start:dev`; la etapa de producción ejecuta `node dist/main.js`. Expone el puerto 5000.
+- **Frontend:** la etapa de desarrollo ejecuta `pnpm dev --hostname 0.0.0.0`; la etapa de producción ejecuta `pnpm start`. Expone el puerto 3000.
+- Los `.dockerignore` excluyen dependencias instaladas localmente, artefactos de build, cobertura, `.git`, archivos `.env` y logs del contexto de construcción.
+
+### 5.2. Desarrollo
+
+Levanta los dos servicios desde la raíz:
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+Para ejecutar los contenedores en segundo plano:
+
+```bash
+docker compose -f docker-compose.dev.yml up --build -d
+```
+
+El entorno de desarrollo monta el código local de `backend/` y `frontend/` dentro de los contenedores. Usa volúmenes nombrados para conservar separados `node_modules` y el directorio `.next` del frontend, evitando que los montajes del código local los reemplacen.
+
+Servicios y puertos:
+
+- Backend: `http://localhost:5000`
+- Frontend: `http://localhost:3000`
+
+Comandos útiles:
+
+```bash
+docker compose -f docker-compose.dev.yml logs -f
+docker compose -f docker-compose.dev.yml ps
+docker compose -f docker-compose.dev.yml down
+```
+
+### 5.3. Producción local
+
+Construye y levanta las imágenes con las etapas de producción:
+
+```bash
+docker compose up --build -d
+```
+
+Servicios y puertos:
+
+- Backend: `http://localhost:5000`
+- Frontend: `http://localhost:3000`
+
+Comandos útiles:
+
+```bash
+docker compose logs -f
+docker compose ps
+docker compose down
+```
+
+Este perfil permite probar localmente los contenedores construidos para producción. No publica imágenes en un registry ni configura un servidor, dominio, TLS o proveedor de hosting.
+
+### 5.4. Límites actuales
+
+- Compose no configura todavía una base de datos; Supabase/PostgreSQL sigue pendiente de integración.
+- No hay `healthcheck` ni `depends_on` configurados entre frontend y backend.
+- No hay pipeline CI/CD para construir, publicar o desplegar imágenes.
+- No se debe incluir información sensible en los archivos de entorno versionados ni en las imágenes.
+- No se ha definido un usuario no root en las imágenes; revisar este punto antes de usar los contenedores en un entorno público.
 
 ## 6. CI actual
 
@@ -116,6 +187,7 @@ Reglas del repositorio (`AGENTS.md` §13): un cambio entra por PR a `main`; el w
 - **Base de datos:** Supabase/PostgreSQL con PostGIS; migraciones versionadas.
 - **Migraciones:** se ejecutan en un paso controlado, nunca automáticamente desde el frontend.
 - **Rollback:** conservar el artefacto anterior y un respaldo de la base antes de migraciones destructivas.
+- **Docker Compose:** por ahora permite ejecutar localmente los perfiles de desarrollo y producción; no reemplaza la configuración de CD ni el despliegue externo.
 
 ## 8. Migración al monorepo
 
@@ -141,20 +213,32 @@ Pasos previstos:
 
 ## 9. Runbook mínimo
 
+### Ejecución sin Docker
+
 1. Instalar dependencias: `cd backend && pnpm install` y `cd frontend && pnpm install`.
 2. Levantar backend: `cd backend && pnpm start:dev`; frontend: `cd frontend && pnpm dev`.
 3. Verificar salud: `GET /health` (cuando exista).
 4. Probar backend: `pnpm test`, `pnpm test:e2e`; frontend: sin runner todavía.
-5. Calidad: `pnpm lint`, `pnpm format:check`, `pnpm audit`, `pnpm build`; frontend: `pnpm lint`, `pnpm format:check`, `pnpm audit`, `pnpm build` y `pnpm exec tsc --noEmit`.
-6. Ante un fallo de despliegue: volver al artefacto anterior y revisar logs; no borrar datos.
+5. Calidad: `pnpm lint`, `pnpm format:check`, `pnpm audit`, `pnpm build`; frontend: `pnpm lint` y `pnpm build`.
+
+### Ejecución con Docker
+
+1. Verificar que existen los cuatro archivos de entorno bajo `docker/` y que contienen únicamente valores apropiados para el entorno local.
+2. Desarrollo: `docker compose -f docker-compose.dev.yml up --build`.
+3. Producción local: `docker compose up --build -d`.
+4. Consultar estado y logs con `docker compose ps` y `docker compose logs -f` (agregar `-f docker-compose.dev.yml` para el entorno de desarrollo).
+5. Detener los servicios con `docker compose down` (agregar `-f docker-compose.dev.yml` para el entorno de desarrollo).
+
+Ante un fallo, revisar primero los logs de los servicios. En un despliegue externo, volver al artefacto anterior y revisar el estado de la base de datos; no borrar datos como medida de recuperación.
 
 ## 10. Decisiones abiertas
 
 - ADR-002: Python vs. n8n para la ingesta.
 - ADR-003: alojamiento del backend y la ingesta.
 - ADR-004: proveedor de tiles para producción.
-- Versiones de Docker y Node para producción.
-- Dockerfile y compose: placeholders vacíos; definir imágenes y servicios.
+- Incorporar healthchecks y definir dependencias entre servicios cuando exista una condición real de disponibilidad.
+- Definir usuario no root y endurecimiento de las imágenes antes del despliegue público.
+- Integrar construcción/publicación de imágenes en CI/CD cuando se defina el proveedor.
 - Runner de pruebas del frontend (Vitest/Testing Library/Playwright).
 - Estrategia de migraciones y respaldos.
 - Dominio y certificados.
@@ -162,7 +246,8 @@ Pasos previstos:
 
 ## 11. Cómo entra en acción
 
-- **Desarrollo:** comandos y variables locales.
+- **Desarrollo:** comandos pnpm locales o `docker-compose.dev.yml`.
+- **Producción local:** `docker-compose.yml` con las etapas de producción.
 - **CI:** validaciones automáticas en cada PR.
 - **Producción:** frontend en Vercel; backend/ingesta según ADR-003.
 - **Migraciones:** base de datos y despliegue controlado.
@@ -170,7 +255,8 @@ Pasos previstos:
 
 ## 12. Cuándo actualizar este documento
 
-- Al agregar Docker, CI, CD o un entorno nuevo.
+- Al cambiar Dockerfiles, Compose, variables o puertos.
+- Al agregar CI, CD o un entorno nuevo.
 - Al cambiar variables, dominios o proveedores.
 - Al ejecutar la migración al monorepo.
 - Si el workflow real cambia.
