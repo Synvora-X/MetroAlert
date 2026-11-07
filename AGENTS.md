@@ -69,18 +69,18 @@ La visión a largo plazo no es el alcance actual: ninguna funcionalidad futura e
 
 | Componente | Tecnología | Versión |
 |---|---|---|
-| Frontend | Next.js + TypeScript | TODO(confirmar) |
+| Frontend | Next.js + TypeScript | Next.js 16.4.5 · React 19.3.0 · Tailwind 4.3.4 (verificado en `frontend/package.json`) |
 | Backend | NestJS + TypeScript | 12.0.1 (verificado en `backend/package.json`) |
 | Base de datos | Supabase / PostgreSQL | TODO(confirmar) |
 | Mapas | Leaflet + OpenStreetMap | TODO(confirmar) |
 | Ingesta | Python o n8n (por decidir) | TODO(confirmar) |
-| Contenedores | Docker | TODO(confirmar) |
+| Contenedores | Docker | Placeholder en `backend/Dockerfile`, `frontend/Dockerfile` y `docker-compose.yml`; no implementado |
 | CI/CD | GitHub Actions | CI configurado en `.github/workflows/ci.yml`; CD pendiente |
 | Despliegue frontend | Vercel | — |
 
 Que una tecnología aparezca aquí **no significa que esté configurada o implementada**. Verifícalo en el repositorio antes de usarla.
 
-Versiones verificadas en el backend: NestJS 12.0.1, TypeScript 6.0.2, pnpm 11.6.0, Vitest 4.1.2, oxlint 1.58.0, prettier 3.4.2 y Supertest 7.0.0. El CI está configurado; CD sigue `TODO(confirmar)`. Las versiones del frontend, base de datos, ingesta y Docker siguen `TODO(confirmar)`.
+Versiones verificadas: backend NestJS 12.0.1, TypeScript 6.0.2, pnpm 11.6.0, Vitest 4.1.2, oxlint 1.58.0, prettier 3.4.2 y Supertest 7.0.0; frontend Next.js 16.4.5, React 19.3.0 y Tailwind 4.3.4. El CI está configurado; CD sigue `TODO(confirmar)`. Base de datos, ingesta y Docker siguen `TODO(confirmar)`; los Dockerfile son placeholders.
 
 **Decisiones abiertas** (no las tomes por tu cuenta; proponlas como ADR):
 
@@ -88,6 +88,7 @@ Versiones verificadas en el backend: NestJS 12.0.1, TypeScript 6.0.2, pnpm 11.6.
 - Dónde se aloja el backend y el servicio de ingesta.
 - Proveedor de tiles del mapa para producción (el servidor público de OpenStreetMap tiene una política de uso que limita el tráfico alto).
 - Modelo de datos físico y migraciones (ADR-005 aceptado: PostGIS sí, pgRouting no; ver `docs/modelo-de-datos.md`).
+- Docker/Compose: archivos placeholder; no implementados.
 
 ## 5. Responsabilidad de cada componente
 
@@ -229,7 +230,7 @@ El usuario probablemente está en una situación de incertidumbre y con poco tie
 
 Antes de usar un comando, comprueba que existe en los scripts del proyecto. No lo supongas.
 
-Los comandos actuales corresponden solo al backend (`backend/`), que es lo único implementado. Ejecutar desde la raíz del repositorio.
+Los comandos actuales corresponden al backend (`backend/`) y al frontend (`frontend/`). Docker sigue pendiente. Ejecutar desde la raíz del repositorio.
 
 | Acción | Comando |
 |---|---|
@@ -238,12 +239,18 @@ Los comandos actuales corresponden solo al backend (`backend/`), que es lo únic
 | Pruebas | `cd backend && pnpm test` · `cd backend && pnpm test:e2e` · `cd backend && pnpm test:cov` |
 | Lint / formato | `cd backend && pnpm lint` · `cd backend && pnpm format` · `cd backend && pnpm format:check` |
 | Build | `cd backend && pnpm build` |
+| Frontend: instalar | `cd frontend && pnpm install` |
+| Frontend: desarrollo | `cd frontend && pnpm dev` |
+| Frontend: build | `cd frontend && pnpm build` |
+| Frontend: producción local | `cd frontend && pnpm start` |
+| Frontend: lint | `cd frontend && pnpm lint` |
+| Frontend: pruebas | TODO(confirmar) — no hay runner. |
 | Migraciones | TODO(confirmar) — no hay base de datos conectada. |
-| Docker | TODO(confirmar) — no hay Dockerfile ni compose. |
+| Docker | TODO(confirmar) — archivos placeholder; no implementado. |
 
-**Estructura:** existe solo `backend/` (NestJS 12: `src/main.ts`, `src/app.module.ts`, `test/`); el frontend todavía no existe. ADR-006 acepta un monorepo con destino `apps/api`, `apps/web` y `packages/contracts`; la migración es incremental y `backend/` se mantiene hasta el PR dedicado. El backend escucha en `PORT` o 5000 por defecto.
+**Estructura:** existen `backend/` (NestJS 12) y `frontend/` (Next.js 16.4.5, scaffold). El frontend todavía no tiene API, mapa, PWA ni pruebas. ADR-006 acepta un monorepo con destino `apps/api`, `apps/web` y `packages/contracts`; la migración es incremental. El backend escucha en `PORT` o 5000; el frontend usa el puerto 3000 por defecto.
 
-Las reglas locales del backend viven en `backend/AGENTS.md`; su estado de implementación, en `backend/MEMORY.md`.
+Las reglas locales del backend viven en `backend/AGENTS.md` y `backend/MEMORY.md`; las del frontend, en `frontend/AGENTS.md` y `frontend/MEMORY.md`.
 
 ## 13. Git y documentación
 
@@ -265,7 +272,7 @@ Las reglas locales del backend viven en `backend/AGENTS.md`; su estado de implem
 - **`.gitignore`:** adecuado al stack del proyecto. Nunca se versionan archivos `.env`, credenciales, `node_modules/` ni artefactos de build.
 
 - Documenta las decisiones técnicas importantes como ADR. Si una decisión cambia, actualiza los documentos afectados.
-- Idioma: la documentación y la comunicación con el desarrollador son en español. TODO(confirmar) idioma de los identificadores en el código.
+- Idioma: la documentación y la comunicación con el desarrollador son en español; los identificadores, archivos y comentarios de código van en inglés. Los mensajes visibles al usuario, en español.
 
 **Documentación de referencia (`/docs`)**
 
