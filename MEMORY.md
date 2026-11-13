@@ -11,7 +11,7 @@
   - `docs/requerimientos.md` — RF-01…RF-16, HU-01…HU-06 (GWT), RNF-01…RNF-14, post-MVP y cuestiones abiertas CA-01…CA-05. Estado: creado.
   - `docs/arquitectura.md` — propuesta de referencia (monolito modular + Clean Architecture; módulos `alerts`, `transport`, `route-engine`, `geolocation`, `sharing`) y decisiones registradas en `docs/adr/`. Estado: creado.
   - `docs/tareas-de-investigacion.md` — plan de estudio con 35 tareas (INV-01…INV-35) en 6 asignaturas, prioridades P0–P3. Estado: creado.
-  - `docs/funcionalidades-post-mvp.md` — hoja de ruta post-MVP ("MetroAlerta 2.0") desmenuzada paso a paso (PM-01…PM-25, versiones V2/V3/V4). Estado: creado. Nada de allí está implementado ni aprobado para entrar al MVP.
+  - `docs/funcionalidades-post-mvp.md` — hoja de ruta post-MVP ("MetroAlert 2.0") desmenuzada paso a paso (PM-01…PM-25, versiones V2/V3/V4). Estado: creado. Nada de allí está implementado ni aprobado para entrar al MVP.
   - `docs/trazabilidad.md` — matriz F01–F05 → RF → HU → RNF → INV → PM y correspondencia INV ↔ PM. Estado: creado.
   - `docs/testing.md` — estrategia de pruebas por componente, estado real del CI y pendientes. Estado: creado.
   - `docs/dominio.md` — glosario, estados, entidades e invariantes; CA-04 y PC-06 resueltos. Estado: creado.
@@ -38,14 +38,14 @@
 
 ## Decisiones recientes (con fecha)
 
-- 2026-11-05 — Requerimientos y arquitectura se basan en la conversación "Plan de MetroAlerta" (ChatGPT, 2026-11-03) más `AGENTS.md`. La conversación es segunda fuente: cuando contradice al código o a `AGENTS.md`, mandan estos últimos.
+- 2026-11-05 — Requerimientos y arquitectura se basan en la conversación "Plan de MetroAlert" (ChatGPT, 2026-11-03) más `AGENTS.md`. La conversación es segunda fuente: cuando contradice al código o a `AGENTS.md`, mandan estos últimos.
 - 2026-11-05 — La propuesta de arquitectura del documento queda explícita como **propuesta de referencia** hasta que existan ADRs; el código real (esqueleto NestJS) manda sobre todo lo escrito.
 - 2026-11-05 — `docs/tareas-de-investigacion.md` se agregó a la tabla de documentos de `AGENTS.md` §13 y se creó este `MEMORY.md` en la raíz (aprobado por el desarrollador en sesión).
-- 2026-11-05 — Se creó `docs/funcionalidades-post-mvp.md`: la sección "MetroAlerta 2.0" de la conversación queda desmenuzada paso a paso como hoja de ruta propuesta (V2 asistencia, V3 institucional, V4 investigación). No es compromiso: ninguna funcionalidad entra al MVP sin aprobación explícita; las exclusiones de `AGENTS.md` §2 se mantienen.
+- 2026-11-05 — Se creó `docs/funcionalidades-post-mvp.md`: la sección "MetroAlert 2.0" de la conversación queda desmenuzada paso a paso como hoja de ruta propuesta (V2 asistencia, V3 institucional, V4 investigación). No es compromiso: ninguna funcionalidad entra al MVP sin aprobación explícita; las exclusiones de `AGENTS.md` §2 se mantienen.
 - 2026-11-05 — Se recuperaron los enlaces del chat desde el JSON del backend-api: la extracción `.md` no conservó los `href`, pero las URLs de los documentos eran correctas. Ahora se citan con la marca "verificar" por vigencia.
 - 2026-11-06 — ADR-001 (monolito modular), ADR-005 (PostGIS + granularidad por conexión) y ADR-006 (monorepo) aceptados. CA-01 (panel admin protegido), CA-02 (`wa.me` + Web Share), CA-04 (conexión) y PC-06 (mantenimiento separado) resueltos.
 - 2026-11-06 — Frontend confirmado con Next.js 16.4.5, React 19.3.0 y Tailwind 4.3.4; App Router, Server Components por defecto y documentación local de Next.js como fuente.
-- 2026-11-06 — Docker queda como placeholder (Dockerfiles y compose vacíos/documentados), no implementado.
+- 2026-11-06 — Docker se documentó inicialmente como placeholder; **corregido el 2026-11-13:** los Dockerfiles multi-etapa y los dos Compose están creados y documentados en `docs/despliegue.md` §5. Siguen pendientes el CD y el endurecimiento de imágenes.
 
 ## ADRs
 
@@ -61,7 +61,7 @@
 - `docs/modelo-de-datos.md` es conceptual; faltan muestras reales y migraciones.
 - `docs/api.md` es un contrato propuesto; no hay endpoints implementados.
 - Frontend sin cliente API, mapa, PWA ni runner de pruebas; `pnpm lint`, `pnpm format:check` y `pnpm build` disponibles y validados.
-- Docker: archivos placeholder; no implementado.
+- Docker: Dockerfiles y Compose configurados; pendientes CD, healthchecks y usuario no root.
 - Las pruebas siguen sin suites y el CI mantiene los pasos de test comentados; el CI sí valida lint, formato, auditoría y build del frontend.
 
 ## Contexto temporal
@@ -82,3 +82,4 @@
 - 2026-11-06 — Creados `frontend/AGENTS.md` y `frontend/MEMORY.md`; documentados Next.js 16.4.5, la estructura frontend y Docker como placeholder no implementado.
 - 2026-11-06 — Frontend con Prettier y CI separado; `pnpm audit` corregido con override de `minimatch >=11.0.1`.
 - 2026-11-13 — `README.md` reescrito contra el estado real: tabla de componentes con madurez verificada, estructura completa, comandos de backend/frontend/Docker, índice de los 11 documentos y los ADR, convenciones de trabajo y siguientes pasos. Se corrigió la afirmación "solo existe el backend" (el frontend existe como scaffold y `/docs` está creado).
+- 2026-11-13 — Nombre unificado como **MetroAlert** en `AGENTS.md`, `/docs`, `backend/` y `frontend/`. Estado de Docker corregido en `AGENTS.md` §4/§12, `docs/despliegue.md` §1 y §9, `docs/arquitectura.md` §3 y `frontend/AGENTS.md`: los Dockerfiles multi-etapa y los dos Compose están creados y `docker compose config` valida con `backend/.env` y `frontend/.env` presentes. Falta `frontend/.env.example`.

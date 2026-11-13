@@ -1,4 +1,4 @@
-# Estrategia de pruebas — MetroAlerta
+# Estrategia de pruebas — MetroAlert
 
 | Campo | Valor |
 |---|---|

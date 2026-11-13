@@ -1,10 +1,10 @@
-# Plan de estudio e investigación — MetroAlerta
+# Plan de estudio e investigación — MetroAlert
 
 | Campo | Valor |
 |---|---|
 | Estado | creado |
 | Fecha | 2026-11-05 |
-| Fuentes | Conversación "Plan de MetroAlerta" (ChatGPT, 2026-11-03, <https://chatgpt.com/share/6aea752c-6ae0-83e9-8e29-6135665fc569>) + `AGENTS.md` |
+| Fuentes | Conversación "Plan de MetroAlert" (ChatGPT, 2026-11-03, <https://chatgpt.com/share/6aea752c-6ae0-83e9-8e29-6135665fc569>) + `AGENTS.md` |
 | Propósito | Plan de estudio para crear el proyecto: qué investigar, en qué orden, qué entrega cada tarea y a qué documento alimenta. |
 | Trazabilidad | Matriz F01–F05 → RF → HU → RNF → INV → PM en `docs/trazabilidad.md`. |
 
@@ -111,7 +111,7 @@ El orden general es consistente con el orden de construcción de `AGENTS.md` §1
 
 ## Asignatura 6 — Post-MVP (P3 · solo estudiar, no implementar)
 
-> Ninguna de estas entra al MVP sin aprobación explícita (`AGENTS.md` §2). Son las ideas de la conversación ("MetroAlerta 2.0"), ordenadas por el valor propuesto para después del MVP.
+> Ninguna de estas entra al MVP sin aprobación explícita (`AGENTS.md` §2). Son las ideas de la conversación ("MetroAlert 2.0"), ordenadas por el valor propuesto para después del MVP.
 
 | ID | Tema | Qué estudiar (sin construir) | Estado |
 |---|---|---|---|

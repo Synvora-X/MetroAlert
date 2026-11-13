@@ -1,10 +1,10 @@
-# Requerimientos — MetroAlerta
+# Requerimientos — MetroAlert
 
 | Campo | Valor |
 |---|---|
 | Estado | creado |
 | Fecha | 2026-11-05 |
-| Fuentes | `AGENTS.md` (marco) + conversación "Plan de MetroAlerta" (ChatGPT, 2026-11-03, <https://chatgpt.com/share/6aea752c-6ae0-83e9-8e29-6135665fc569>) |
+| Fuentes | `AGENTS.md` (marco) + conversación "Plan de MetroAlert" (ChatGPT, 2026-11-03, <https://chatgpt.com/share/6aea752c-6ae0-83e9-8e29-6135665fc569>) |
 | Relación con AGENTS.md | Las funcionalidades F01–F05 (sección 2 de `AGENTS.md`) son la versión resumida del alcance. Este documento las descompone en RF verificables. Si este documento contradice `AGENTS.md`, manda `AGENTS.md`. |
 | Trazabilidad | Matriz F01–F05 → RF → HU → RNF → INV → PM en `docs/trazabilidad.md`. |
 | Documentos derivados | `docs/dominio.md` (reglas), `docs/modelo-de-datos.md` (persistencia) y `docs/api.md` (contrato HTTP). |
@@ -110,7 +110,7 @@ Como pasajero, quiero compartir una alternativa por WhatsApp para informar a otr
 
 **Criterios de aceptación:**
 - Dada una alternativa visible, cuando el usuario elige compartir, entonces el mensaje incluye origen, destino, medios con estaciones/paraderos, tiempo estimado (marcado como aproximado) y la contingencia relacionada.
-- Dado que el usuario comparte una alternativa, cuando no tiene cuenta ni sesión iniciada, entonces el enlace o mensaje generado funciona sin autenticación en MetroAlerta.
+- Dado que el usuario comparte una alternativa, cuando no tiene cuenta ni sesión iniciada, entonces el enlace o mensaje generado funciona sin autenticación en MetroAlert.
 
 ### HU-06 — Confiar en la información
 

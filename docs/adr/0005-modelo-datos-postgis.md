@@ -46,4 +46,4 @@ El proyecto necesita representar estaciones, paraderos, líneas, conexiones y ge
 
 - `AGENTS.md` §6 (reglas de dominio).
 - `docs/arquitectura.md` §7 (Route Engine).
-- Conversación "Plan de MetroAlerta": representación de segmentos y PostGIS.
+- Conversación "Plan de MetroAlert": representación de segmentos y PostGIS.

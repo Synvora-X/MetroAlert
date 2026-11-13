@@ -1,4 +1,4 @@
-# API — MetroAlerta
+# API — MetroAlert
 
 | Campo | Valor |
 |---|---|
@@ -240,7 +240,7 @@ Respuesta:
 
 ```json
 {
-  "text": "MetroAlerta: ...",
+  "text": "MetroAlert: ...",
   "url": "https://wa.me/?text=...",
   "data_origin": "simulado"
 }

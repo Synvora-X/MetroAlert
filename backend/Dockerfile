@@ -1,5 +1,6 @@
-# Placeholder: backend Docker is not implemented yet.
-# When implemented: multi-stage build with pnpm, Node 22 and a non-root user.
+# Backend image (multi-stage): Node 22 + pnpm 11.6 via Corepack.
+# Stages: development, build, production. See docs/despliegue.md §5.
+# Pending: non-root user and healthcheck before public deployment.
 
 FROM node:22-bookworm-slim AS base
 

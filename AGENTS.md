@@ -1,6 +1,6 @@
-# AGENTS.md — MetroAlerta
+# AGENTS.md — MetroAlert
 
-> Contexto general del proyecto para cualquier agente de IA. No está orientado a una capa en particular (frontend, backend, ingesta): describe qué es MetroAlerta, qué reglas rigen todo el sistema y cómo se trabaja en él.
+> Contexto general del proyecto para cualquier agente de IA. No está orientado a una capa en particular (frontend, backend, ingesta): describe qué es MetroAlert, qué reglas rigen todo el sistema y cómo se trabaja en él.
 >
 > - Si algo de este archivo contradice el código real, **el código manda**: señala la contradicción antes de hacer cambios grandes.
 > - `TODO(confirmar)` marca datos que el desarrollador aún debe definir. No los inventes ni los des por hechos.
@@ -11,17 +11,17 @@
 2. Este archivo (`AGENTS.md`).
 3. Los documentos de `/docs` (cada uno manda sobre su materia; ver tabla de la sección 13).
 4. `MEMORY.md` (estado temporal).
-5. La conversación "Plan de MetroAlerta" (contexto histórico; no es fuente de verdad).
+5. La conversación "Plan de MetroAlert" (contexto histórico; no es fuente de verdad).
 
 Toda contradicción se señala antes de actuar; no se silencia. **Estados de madurez:** `propuesta` (sin aprobar), `decisión` (ADR o aprobación explícita) e `implementado` (verificado en el código). **Lectura sugerida:** `AGENTS.md` → `MEMORY.md` → documento dueño del tema (sección 13).
 
 ---
 
-## 1. Qué es MetroAlerta
+## 1. Qué es MetroAlert
 
 PWA para el Valle de Aburrá (Antioquia, Colombia). Cuando hay una contingencia en el Metro de Medellín (interrupción, suspensión, cierre de estación, retraso), muestra qué está afectado y propone **hasta 3 rutas alternativas** con tiempo estimado.
 
-- **Problema que resuelve:** saber que hay una contingencia no dice qué hacer para continuar el viaje. MetroAlerta conecta "hay una contingencia" con "qué hago ahora".
+- **Problema que resuelve:** saber que hay una contingencia no dice qué hacer para continuar el viaje. MetroAlert conecta "hay una contingencia" con "qué hago ahora".
 - **No reemplaza** a las apps de navegación: es una herramienta especializada para contingencias.
 - **Usuarios:** personas que usan el transporte público a diario (estudiantes, trabajadores), desde el celular, con poco tiempo para decidir.
 - **Propósito:** proyecto de portafolio y prototipo funcional para validar la idea con posibles aliados (Metro de Medellín, Área Metropolitana del Valle de Aburrá, otras entidades de movilidad).
@@ -74,13 +74,13 @@ La visión a largo plazo no es el alcance actual: ninguna funcionalidad futura e
 | Base de datos | Supabase / PostgreSQL | TODO(confirmar) |
 | Mapas | Leaflet + OpenStreetMap | TODO(confirmar) |
 | Ingesta | Python o n8n (por decidir) | TODO(confirmar) |
-| Contenedores | Docker | Placeholder en `backend/Dockerfile`, `frontend/Dockerfile` y `docker-compose.yml`; no implementado |
+| Contenedores | Docker | Dockerfiles multi-etapa (development, build, production) y `docker-compose.yml` + `docker-compose.dev.yml` configurados; CD y endurecimiento pendientes (ver `docs/despliegue.md` §5) |
 | CI/CD | GitHub Actions | CI valida backend y frontend en `.github/workflows/ci.yml`; CD pendiente |
 | Despliegue frontend | Vercel | — |
 
 Que una tecnología aparezca aquí **no significa que esté configurada o implementada**. Verifícalo en el repositorio antes de usarla.
 
-Versiones verificadas: backend NestJS 12.0.1, TypeScript 6.0.2, pnpm 11.6.0, Vitest 4.1.2, oxlint 1.58.0, prettier 3.4.2 y Supertest 7.0.0; frontend Next.js 16.4.5, React 19.3.0 y Tailwind 4.3.4. El CI está configurado; CD sigue `TODO(confirmar)`. Base de datos, ingesta y Docker siguen `TODO(confirmar)`; los Dockerfile son placeholders.
+Versiones verificadas: backend NestJS 12.0.1, TypeScript 6.0.2, pnpm 11.6.0, Vitest 4.1.2, oxlint 1.58.0, prettier 3.4.2 y Supertest 7.0.0; frontend Next.js 16.4.5, React 19.3.0 y Tailwind 4.3.4. El CI está configurado; CD sigue `TODO(confirmar)`. Base de datos e ingesta siguen `TODO(confirmar)`; Docker está configurado (Dockerfiles y Compose), sin CD ni construcción de imágenes en CI.
 
 **Decisiones abiertas** (no las tomes por tu cuenta; proponlas como ADR):
 
@@ -88,7 +88,7 @@ Versiones verificadas: backend NestJS 12.0.1, TypeScript 6.0.2, pnpm 11.6.0, Vit
 - Dónde se aloja el backend y el servicio de ingesta.
 - Proveedor de tiles del mapa para producción (el servidor público de OpenStreetMap tiene una política de uso que limita el tráfico alto).
 - Modelo de datos físico y migraciones (ADR-005 aceptado: PostGIS sí, pgRouting no; ver `docs/modelo-de-datos.md`).
-- Docker/Compose: archivos placeholder; no implementados.
+- Docker/Compose: endurecimiento (usuario no root, healthchecks) y automatización de imágenes en CI/CD.
 
 ## 5. Responsabilidad de cada componente
 
@@ -247,7 +247,7 @@ Los comandos actuales corresponden al backend (`backend/`) y al frontend (`front
 | Frontend: formato | `cd frontend && pnpm format` · `cd frontend && pnpm format:check` |
 | Frontend: pruebas | TODO(confirmar) — no hay runner. |
 | Migraciones | TODO(confirmar) — no hay base de datos conectada. |
-| Docker | TODO(confirmar) — archivos placeholder; no implementado. |
+| Docker | `docker compose -f docker-compose.dev.yml up --build` · `docker compose up --build -d`; requiere `backend/.env` y `frontend/.env` |
 
 **Estructura:** existen `backend/` (NestJS 12) y `frontend/` (Next.js 16.4.5, scaffold). El frontend todavía no tiene API, mapa, PWA ni pruebas. ADR-006 acepta un monorepo con destino `apps/api`, `apps/web` y `packages/contracts`; la migración es incremental. El backend escucha en `PORT` o 5000; el frontend usa el puerto 3000 por defecto.
 
@@ -291,7 +291,7 @@ Este archivo da el contexto y las reglas esenciales; el detalle vive en `/docs`.
 | `docs/testing.md` | Estrategia de pruebas por componente | Escribir o cambiar pruebas | creado |
 | `docs/despliegue.md` | Docker, CI/CD, entornos y variables | Tocar infraestructura | creado |
 | `docs/tareas-de-investigacion.md` | Plan de estudio e investigación priorizado (tareas INV-01…INV-35, prioridades P0–P3) | Empezar trabajo de investigación o retomar el plan | creado |
-| `docs/funcionalidades-post-mvp.md` | Hoja de ruta post-MVP ("MetroAlerta 2.0") desmenuzada paso a paso (PM-01…PM-25, versiones V2/V3/V4) | Diseñar o proponer funcionalidades futuras | creado |
+| `docs/funcionalidades-post-mvp.md` | Hoja de ruta post-MVP ("MetroAlert 2.0") desmenuzada paso a paso (PM-01…PM-25, versiones V2/V3/V4) | Diseñar o proponer funcionalidades futuras | creado |
 | `docs/trazabilidad.md` | Matriz de trazabilidad F01–F05 → RF → HU → RNF → INV → PM y correspondencia INV ↔ PM | Revisar cobertura o cambiar un ID | creado |
 
 **Documentos creados con información pendiente**

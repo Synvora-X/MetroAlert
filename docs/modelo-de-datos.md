@@ -1,4 +1,4 @@
-# Modelo de datos — MetroAlerta
+# Modelo de datos — MetroAlert
 
 | Campo | Valor |
 |---|---|

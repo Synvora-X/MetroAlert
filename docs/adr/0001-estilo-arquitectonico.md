@@ -9,7 +9,7 @@
 
 ## Contexto
 
-MetroAlerta es una PWA para el Valle de Aburrá con un backend NestJS, un frontend Next.js y un proceso de ingesta separado. El equipo es pequeño y el MVP debe validar el flujo completo antes de escalar. El cálculo de rutas y la gestión de contingencias son el núcleo del dominio, pero no justifican una arquitectura distribuida.
+MetroAlert es una PWA para el Valle de Aburrá con un backend NestJS, un frontend Next.js y un proceso de ingesta separado. El equipo es pequeño y el MVP debe validar el flujo completo antes de escalar. El cálculo de rutas y la gestión de contingencias son el núcleo del dominio, pero no justifican una arquitectura distribuida.
 
 ## Decisión
 

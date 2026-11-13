@@ -8,7 +8,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# AGENTS.md — Frontend MetroAlerta
+# AGENTS.md — Frontend MetroAlert
 
 | Campo | Valor |
 |---|---|
@@ -39,7 +39,7 @@ Si hay contradicción, gana el archivo de mayor precedencia y se señala antes d
 - `next.config.ts` usa `cacheComponents: true`, `partialPrefetching: true` y Turbopack para CSS.
 - `app/layout.tsx` tiene `lang="en"` y metadata `"Create Next App"`: son placeholders.
 - No hay cliente de API, Leaflet, manifest PWA, service worker ni pruebas.
-- `frontend/Dockerfile` es un placeholder vacío; Docker no está implementado.
+- `frontend/Dockerfile` es multi-etapa (development, build y production) y se usa desde `docker-compose.dev.yml` y `docker-compose.yml`; ver `../docs/despliegue.md` §5.
 - ADR-006 acepta un monorepo con destino `apps/web`; `frontend/` se mantiene hasta el PR de migración.
 
 ## 3. Comandos

@@ -1,4 +1,4 @@
-# MEMORY.md — Frontend MetroAlerta
+# MEMORY.md — Frontend MetroAlert
 
 > Memoria local del frontend. No reemplaza `../MEMORY.md`: la raíz guarda el estado y las decisiones del proyecto; este archivo guarda el detalle de implementación del frontend. Si se contradicen, manda `../AGENTS.md` y luego `../MEMORY.md`.
 
@@ -16,18 +16,18 @@
 - `app/layout.tsx` tiene `lang="en"` y metadata `"Create Next App"`: placeholders por reemplazar.
 - `next.config.ts` usa `cacheComponents: true`, `partialPrefetching: true` y Turbopack para CSS.
 - Sin cliente de API, Leaflet, manifest PWA, service worker ni pruebas.
-- `frontend/Dockerfile` es un placeholder vacío; Docker no está implementado.
+- `frontend/Dockerfile` es multi-etapa (development, build y production); ver `../docs/despliegue.md` §5.
 - `frontend/.gitignore` ignora `.env*`; si se crea `.env.example`, agregar `!.env.example`.
 - ADR-006: destino `apps/web`; `frontend/` se mantiene hasta el PR de migración.
 
 ## Tareas en progreso
 
-- Ninguna. Siguiente paso: reemplazar el scaffold por el shell de MetroAlerta.
+- Ninguna. Siguiente paso: reemplazar el scaffold por el shell de MetroAlert.
 
 ## Backlog corto
 
 1. Shell y navegación principal.
-2. Metadata de MetroAlerta y `lang="es"`.
+2. Metadata de MetroAlert y `lang="es"`.
 3. Cliente API en `lib/api` contra `../docs/api.md`.
 4. Lista de contingencias y estados de carga/error/vacío.
 5. Mapa Leaflet en cliente.
@@ -81,7 +81,7 @@ No existe `pnpm test`; no ejecutarlo ni inventarlo.
 - Sin datos reales verificados.
 - Sin runner de pruebas.
 - Sin Leaflet, PWA ni cliente API.
-- `frontend/Dockerfile` vacío; Docker no implementado.
+- Docker del frontend configurado (multi-etapa); sin CD ni imágenes publicadas.
 - Migración a monorepo pendiente.
 - `.env*` ignorado; exceptuar `.env.example` si se crea.
 
@@ -93,7 +93,7 @@ No existe `pnpm test`; no ejecutarlo ni inventarlo.
 
 ## Próximo paso
 
-Crear el shell de MetroAlerta: layout en español, metadata correcta, navegación básica y cliente API inicial. Después, la lista de contingencias y el mapa.
+Crear el shell de MetroAlert: layout en español, metadata correcta, navegación básica y cliente API inicial. Después, la lista de contingencias y el mapa.
 
 ## Protocolo de actualización
 
