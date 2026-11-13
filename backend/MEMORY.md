@@ -1,4 +1,4 @@
-# MEMORY.md — Backend MetroAlerta
+# MEMORY.md — Backend MetroAlert
 
 > Memoria local del backend. No reemplaza `../MEMORY.md`: la raíz guarda el estado y las decisiones del proyecto; este archivo guarda el detalle de implementación del backend. Si se contradicen, manda `../AGENTS.md` y luego `../MEMORY.md`.
 

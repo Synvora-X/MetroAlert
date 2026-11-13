@@ -1,5 +1,6 @@
-# Placeholder: frontend Docker is not implemented yet.
-# When implemented: multi-stage build for Next.js and a minimal runtime image.
+# Frontend image (multi-stage): Node 22 + pnpm 11.6 via Corepack.
+# Stages: development, build, production. See docs/despliegue.md §5.
+# Pending: minimal runtime image, non-root user and healthcheck.
 
 FROM node:22-bookworm-slim AS base
 

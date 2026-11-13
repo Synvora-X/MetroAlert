@@ -1,10 +1,10 @@
-# Fuentes de datos — MetroAlerta
+# Fuentes de datos — MetroAlert
 
 | Campo | Valor |
 |---|---|
 | Estado | creado |
 | Fecha | 2026-11-06 |
-| Fuentes | Conversación "Plan de MetroAlerta" (URLs recuperadas del JSON del chat) + `AGENTS.md` §7 + `docs/tareas-de-investigacion.md` (INV-01…INV-09) |
+| Fuentes | Conversación "Plan de MetroAlert" (URLs recuperadas del JSON del chat) + `AGENTS.md` §7 + `docs/tareas-de-investigacion.md` (INV-01…INV-09) |
 | Propósito | Registrar qué fuentes existen, qué pueden aportar, bajo qué condiciones y con qué vigencia. |
 | Autoridad | Ninguna fila es un dato confirmado hasta completar su verificación y registrar fecha y evidencia. |
 

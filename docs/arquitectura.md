@@ -1,10 +1,10 @@
-# Arquitectura — MetroAlerta
+# Arquitectura — MetroAlert
 
 | Campo | Valor |
 |---|---|
 | Estado | creado |
 | Fecha | 2026-11-05 |
-| Fuentes | `AGENTS.md` (§5, §7, §9 — marco) + conversación "Plan de MetroAlerta" (ChatGPT, 2026-11-03, <https://chatgpt.com/share/6aea752c-6ae0-83e9-8e29-6135665fc569>) |
+| Fuentes | `AGENTS.md` (§5, §7, §9 — marco) + conversación "Plan de MetroAlert" (ChatGPT, 2026-11-03, <https://chatgpt.com/share/6aea752c-6ae0-83e9-8e29-6135665fc569>) |
 | Alcance | Detalla los componentes, el backend modular y sus límites. Las responsabilidades por componente (frontend/backend/BD/ingesta) se definen en `AGENTS.md` §5; aquí se concretan en módulos y capas, no se duplican. |
 
 **Advertencias de honestidad:**
@@ -107,7 +107,7 @@ Reglas de arquitectura:
 - El frontend consume `docs/api.md`; no calcula rutas ni accede directamente a Supabase.
 - Leaflet se carga solo en cliente y se aísla en `components/map/`.
 - PWA (manifest, service worker y offline) se implementa después del shell.
-- Docker sigue siendo un placeholder; no hay imagen ni compose funcional.
+- Docker está configurado: Dockerfiles multi-etapa por componente y Compose de desarrollo y producción local (ver `docs/despliegue.md` §5); CD y endurecimiento siguen pendientes.
 
 ## 4. Módulos del backend
 

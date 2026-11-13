@@ -1,4 +1,4 @@
-# Despliegue — MetroAlerta
+# Despliegue — MetroAlert
 
 | Campo | Valor |
 |---|---|
@@ -19,7 +19,7 @@
 
 - Existen `backend/` (NestJS 12, TypeScript, pnpm, Vitest, oxlint y Prettier) y `frontend/` (Next.js 16.4.5, React 19.3, Tailwind 4.3.4, scaffold).
 - El frontend no tiene API client, Leaflet, PWA ni pruebas; solo el scaffold de `create-next-app`.
-- Hay `backend/Dockerfile`, `frontend/Dockerfile` y `docker-compose.yml` vacíos: son placeholders, no una implementación funcional.
+- Docker está configurado: `backend/Dockerfile` y `frontend/Dockerfile` son multi-etapa (development, build y production) y existen `docker-compose.dev.yml` (desarrollo) y `docker-compose.yml` (producción local). No hay CD ni imágenes publicadas; ver §5.
 - No hay CD ni despliegue de backend; Vercel está previsto para el frontend.
 - El CI está configurado en `.github/workflows/ci.yml` y corre en `push` a `main` y en PR hacia `main`; valida backend y frontend.
 - La base de datos Supabase/PostgreSQL no está conectada.
@@ -104,6 +104,8 @@ Detalles por componente:
 - Los `.dockerignore` excluyen dependencias instaladas localmente, artefactos de build, cobertura, `.git`, archivos `.env` y logs del contexto de construcción.
 
 ### 5.2. Desarrollo
+
+Antes de levantar los servicios, crea `backend/.env` y `frontend/.env`: son los `env_file` que leen ambos Compose y, si falta alguno, el comando falla con "env file not found". Con los dos presentes, `docker compose -f docker-compose.dev.yml config --quiet` valida la configuración (verificado con Docker 28.0.4 y Compose 2.34).
 
 Levanta los dos servicios desde la raíz:
 
@@ -223,7 +225,7 @@ Pasos previstos:
 
 ### Ejecución con Docker
 
-1. Verificar que existen los cuatro archivos de entorno bajo `docker/` y que contienen únicamente valores apropiados para el entorno local.
+1. Crear `backend/.env` (partiendo de `backend/.env.example`) y `frontend/.env`; son los archivos que ambos Compose leen, y si falta alguno `docker compose config` falla con "env file not found". Hoy no existe `frontend/.env.example`.
 2. Desarrollo: `docker compose -f docker-compose.dev.yml up --build`.
 3. Producción local: `docker compose up --build -d`.
 4. Consultar estado y logs con `docker compose ps` y `docker compose logs -f` (agregar `-f docker-compose.dev.yml` para el entorno de desarrollo).

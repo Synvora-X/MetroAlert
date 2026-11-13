@@ -1,10 +1,10 @@
-# Funcionalidades post-MVP — Hoja de ruta "MetroAlerta 2.0"
+# Funcionalidades post-MVP — Hoja de ruta "MetroAlert 2.0"
 
 | Campo | Valor |
 |---|---|
 | Estado | creado |
 | Fecha | 2026-11-05 |
-| Fuentes | Conversación "Plan de MetroAlerta" (ChatGPT, 2026-11-03, <https://chatgpt.com/share/6aea752c-6ae0-83e9-8e29-6135665fc569>), sección "MetroAlerta 2.0" + `AGENTS.md` (§2, §5, §8) |
+| Fuentes | Conversación "Plan de MetroAlert" (ChatGPT, 2026-11-03, <https://chatgpt.com/share/6aea752c-6ae0-83e9-8e29-6135665fc569>), sección "MetroAlert 2.0" + `AGENTS.md` (§2, §5, §8) |
 | Relación con otros documentos | `docs/requerimientos.md` §4 lista estas candidatas en una línea cada una; este documento las desmenuza paso a paso. El alcance y las exclusiones mandatorias están en `AGENTS.md` §2 (fuente de verdad). El plan de estudio asociado vive en `docs/tareas-de-investigacion.md`, Asignatura 6; la correspondencia `INV ↔ PM` está en `docs/trazabilidad.md`. |
 
 **Advertencia de alcance (leer antes de usar este documento):**
@@ -29,7 +29,7 @@ La conversación propone organizar la evolución en cuatro versiones (secciones 
 | Versión | Objetivo | Funcionalidades principales |
 |---|---|---|
 | **V2 — Asistencia al pasajero** | Convertir la app en acompañante del desplazamiento | Seguimiento y clasificación de contingencias, trayectos favoritos, notificaciones personalizadas, mantenimientos programados, rutas según preferencias, rutas accesibles, replanificación, instrucciones paso a paso, reportes ciudadanos moderados, comparador de impacto, retroalimentación, compartir estado, modo offline, multilenguaje |
-| **V3 — Plataforma institucional** | Herramientas para Metro/AMVA y operadores ("MetroAlerta Control") | Dashboard de contingencias, mapa de impacto, analítica histórica, simulador de escenarios, panel de calidad de datos, API institucional |
+| **V3 — Plataforma institucional** | Herramientas para Metro/AMVA y operadores ("MetroAlert Control") | Dashboard de contingencias, mapa de impacto, analítica histórica, simulador de escenarios, panel de calidad de datos, API institucional |
 | **V4 — Investigación futura** | Evolución avanzada de asistencia y análisis | Predicción de demanda, información operativa en tiempo real, modelos avanzados de estimación y simulación compleja |
 
 **Priorización de la conversación** (valor vs. dificultad, conversación §11.1):
@@ -294,9 +294,9 @@ Las cuatro que la conversación recomienda investigar primero tras el MVP: mante
 
 ---
 
-## 3. V3 — Plataforma institucional ("MetroAlerta Control")
+## 3. V3 — Plataforma institucional ("MetroAlert Control")
 
-La conversación propone dos productos conectados con el mismo backend y permisos distintos: **MetroAlerta Passenger** (V2) y **MetroAlerta Control** (V3, para operadores y entidades).
+La conversación propone dos productos conectados con el mismo backend y permisos distintos: **MetroAlert Passenger** (V2) y **MetroAlert Control** (V3, para operadores y entidades).
 
 ### PM-16 — Dashboard de contingencias
 
@@ -364,7 +364,7 @@ La conversación propone dos productos conectados con el mismo backend y permiso
 
 ### PM-20 — API institucional
 
-**Objetivo:** API pública/institucional con autenticación, permisos, límites de consumo y documentación OpenAPI, para que otras aplicaciones consulten MetroAlerta con acuerdo de integración y condiciones de acceso.
+**Objetivo:** API pública/institucional con autenticación, permisos, límites de consumo y documentación OpenAPI, para que otras aplicaciones consulten MetroAlert con acuerdo de integración y condiciones de acceso.
 
 | Valor | Dificultad | Prerrequisito |
 |---|---|---|
@@ -373,9 +373,9 @@ La conversación propone dos productos conectados con el mismo backend y permiso
 **Pasos:**
 
 1. Definir el contrato de la API en `docs/api.md` (hoy pendiente). La conversación ofrece **ejemplos propuestos, no existentes**: `GET /api/v1/incidents`, `GET /api/v1/incidents/active`, `GET /api/v1/transport/network`, `GET /api/v1/routes/alternatives`, `GET /api/v1/maintenance/events`.
-2. Formalizar la relación con el ecosistema (conversación §9): Metro (estado del sistema), operadores de buses (rutas y servicios), AMVA (datos territoriales), ciudadanos (reportes y observaciones) → MetroAlerta (normalización, validación, integración, análisis) → consumidores: pasajeros (PWA) y entidades (dashboard y API).
+2. Formalizar la relación con el ecosistema (conversación §9): Metro (estado del sistema), operadores de buses (rutas y servicios), AMVA (datos territoriales), ciudadanos (reportes y observaciones) → MetroAlert (normalización, validación, integración, análisis) → consumidores: pasajeros (PWA) y entidades (dashboard y API).
 3. Autenticación, permisos y límites de consumo por clave/consumidor; acuerdos de integración documentados.
-4. **Regla del proyecto:** las políticas de uso de cada fuente externa (ver INV-08 del plan de estudio) quedan primero confirmadas; la API de MetroAlerta no puede ofrecer lo que no tiene derecho a redistribuir.
+4. **Regla del proyecto:** las políticas de uso de cada fuente externa (ver INV-08 del plan de estudio) quedan primero confirmadas; la API de MetroAlert no puede ofrecer lo que no tiene derecho a redistribuir.
 
 ### PM-21 — Panel de calidad de datos (Data Health)
 
