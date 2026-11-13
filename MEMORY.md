@@ -4,7 +4,7 @@
 
 ---
 
-## Estado actual (al 2026-11-06)
+## Estado actual (al 2026-11-13)
 
 - Proyecto en fase de **fundamentos** (orden de construcción §15): `backend/` es el esqueleto NestJS 12 (`src/main.ts` + `src/app.module.ts`, sin módulos de dominio); `frontend/` existe con Next.js 16.4.5 (scaffold), sin API, mapa, PWA ni pruebas; no hay base de datos conectada ni ingesta.
 - Documentación de fundamentos creada y revisada:
@@ -81,3 +81,4 @@
 - 2026-11-06 — Completados los documentos faltantes: dominio, fuentes, modelo de datos, API, despliegue y carpeta ADR; decisiones cerradas y tabla de completitud en `AGENTS.md` §13.
 - 2026-11-06 — Creados `frontend/AGENTS.md` y `frontend/MEMORY.md`; documentados Next.js 16.4.5, la estructura frontend y Docker como placeholder no implementado.
 - 2026-11-06 — Frontend con Prettier y CI separado; `pnpm audit` corregido con override de `minimatch >=11.0.1`.
+- 2026-11-13 — `README.md` reescrito contra el estado real: tabla de componentes con madurez verificada, estructura completa, comandos de backend/frontend/Docker, índice de los 11 documentos y los ADR, convenciones de trabajo y siguientes pasos. Se corrigió la afirmación "solo existe el backend" (el frontend existe como scaffold y `/docs` está creado).
